@@ -10,25 +10,25 @@ public class LinkedQueue<E> implements Queue<E> {
         private Node<T> next;
 
 
-        public Node(E element){
+        Node(E element) {
             this.setElement(element);
             setNext(null);
         }
 
 
-        public E getElement() {
+        E getElement() {
             return element;
         }
 
-        public void setElement(E element) {
+        void setElement(E element) {
             this.element = element;
         }
 
-        public Node<T> getNext() {
+        Node<T> getNext() {
             return next;
         }
 
-        public void setNext(Node<T> next) {
+        void setNext(Node<T> next) {
             this.next = next;
         }
     }
@@ -36,17 +36,16 @@ public class LinkedQueue<E> implements Queue<E> {
     @Override
     public int size() {
         return size;
-
     }
 
     @Override
     public boolean isEmpty() {
-        return size==0;
+        return size == 0;
     }
 
     @Override
     public E front() {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new RuntimeException("Queue is empty");
         }
         return this.front.getElement();
@@ -55,7 +54,7 @@ public class LinkedQueue<E> implements Queue<E> {
     @Override
     public void enqueue(E element) {
         Node<E> newNode = new Node<>(element);
-        if(isEmpty()){
+        if (isEmpty()) {
             this.front = newNode;
         } else {
             this.tail.setNext(newNode);
@@ -66,15 +65,16 @@ public class LinkedQueue<E> implements Queue<E> {
 
     @Override
     public E dequeue() {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new RuntimeException("Queue is empty");
         }
         E element = this.front();
         this.front = this.front.getNext();
-        if(this.front == null) {
+        if (this.front == null) {
             this.tail = null;
         }
         size--;
         return element;
     }
+
 }
