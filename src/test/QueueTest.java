@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Assumptions;
 import static org.junit.jupiter.api.Assertions.*;
 
 class QueueTest {
-    Queue<Integer> queue;
-    final int MAX=25;
+    private Queue<Integer> queue;
+    private final int MAX = 25;
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
-//        queue = new ArrayQueue<>();
-        queue = new LinkedQueue<>();
+        queue = new ArrayQueue<>();
+        //queue = new LinkedQueue<>();
         for (int i = 0; i < MAX; i++) {
             queue.enqueue(i);
         }
@@ -44,7 +44,7 @@ class QueueTest {
     @org.junit.jupiter.api.Test
     void testEnqueue() {
         int size = queue.size();
-        for (int i=1;i<=10;i++) {
+        for (int i = 1; i <= 10; i++) {
             queue.enqueue(i);
             size++;
             assertEquals(size, queue.size());
@@ -54,15 +54,14 @@ class QueueTest {
     @org.junit.jupiter.api.Test
     void testDequeue() {
         int actual = 0;
-        while(!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             int element = queue.dequeue();
-            assertEquals(element,actual);
+            assertEquals(element, actual);
             actual++;
         }
         assertTrue(queue.isEmpty());
         RuntimeException runtimeException = Assertions.assertThrows(RuntimeException.class, () -> queue.dequeue());
         assertEquals("Queue is empty", runtimeException.getMessage());
-
     }
 
     @org.junit.jupiter.api.Test
@@ -74,18 +73,18 @@ class QueueTest {
         //assumingThat if a test tha only executes in certain conditions
         //if the condition is not met the test will pass.
         Assumptions.assumingThat(queue instanceof ArrayQueue,
-                ()->{
+                () -> {
                     int start = 100;
                     int maxElements = 500;
 
                     //Empty Queue
-                    while(!queue.isEmpty()) {
+                    while (!queue.isEmpty()) {
                         queue.dequeue();
                     }
 
                     //fill and exceed default capacity
-                    for (int i = 0; i <maxElements ; i++) {
-                        queue.enqueue(i+start);
+                    for (int i = 0; i < maxElements; i++) {
+                        queue.enqueue(i + start);
                     }
 
                     //retrieve all new elements
@@ -95,10 +94,11 @@ class QueueTest {
                         assertEquals(element, actual);
                         actual++;
                     }
-                    RuntimeException runtimeException = Assertions.assertThrows(RuntimeException.class, () -> queue.dequeue());
+                    RuntimeException runtimeException = Assertions.assertThrows(RuntimeException.class,
+                            () -> queue.dequeue());
                     assertEquals("Queue is empty", runtimeException.getMessage());
 
                 });
-
     }
+
 }

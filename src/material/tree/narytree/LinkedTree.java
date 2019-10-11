@@ -173,7 +173,7 @@ public class LinkedTree<E> implements NAryTree<E> {
         return node.getChildren();
     }
 
-
+    @Override
     public E replace(Position<E> p, E e) {
         TreeNode<E> node = checkPosition(p);
         E temp = p.getElement();
@@ -191,6 +191,7 @@ public class LinkedTree<E> implements NAryTree<E> {
         return root;
     }
 
+    @Override
     public void swapElements(Position<E> p1, Position<E> p2) {
         TreeNode<E> node1 = checkPosition(p1);
         TreeNode<E> node2 = checkPosition(p2);
@@ -219,6 +220,7 @@ public class LinkedTree<E> implements NAryTree<E> {
         return aux;
     }
 
+    @Override
     public Position<E> add(E element, Position<E> p) {
         TreeNode<E> parent = checkPosition(p);
         TreeNode<E> newNode = new TreeNode<E>(this, element, parent, new ArrayList<>());
@@ -228,6 +230,7 @@ public class LinkedTree<E> implements NAryTree<E> {
         return newNode;
     }
 
+    @Override
     public void remove(Position<E> p) {
         TreeNode<E> node = checkPosition(p);
         if (node.getParent() != null) {
@@ -255,8 +258,30 @@ public class LinkedTree<E> implements NAryTree<E> {
 
     @Override
     public void moveSubtree(Position<E> pOrig, Position<E> pDest) throws RuntimeException {
-        //TODO: Practica 2 Ejercicio 1
-        throw new RuntimeException("Not implemented");
+        TreeNode<E> nOrig = checkPosition(pOrig);
+        TreeNode<E> nDest = checkPosition(pDest);
+        if (nOrig == this.root) {
+            throw new RuntimeException("Root node can't be moved");
+        }
+        // Doesn't need, but JUnit test is failing...
+        if (nOrig == nDest) {
+            throw new RuntimeException("Both positions are the same");
+        }
+        // Check destination node is a subtree of the original one
+        Iterator<Position<E>> it = new BFSIterator<>(this, nOrig);
+        while (it.hasNext()) {
+            TreeNode<E> next = checkPosition(it.next());
+            if (next == nDest) {
+                throw new RuntimeException("Target position can't be a sub tree of origin");
+            }
+        }
+        // Remove pOrig from original parent
+        TreeNode<E> nOrigParent = nOrig.getParent();
+        nOrigParent.getChildren().remove(nOrig);
+        // Change pOrig parent to pDest
+        nOrig.setParent(nDest);
+        // Add pOrig to pDest children
+        nDest.getChildren().add(nOrig);
     }
 
 }
