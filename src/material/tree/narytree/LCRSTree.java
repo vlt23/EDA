@@ -1,8 +1,11 @@
 package material.tree.narytree;
 
 import material.Position;
+import material.tree.iterators.BFSIterator;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * A linked class for a tree where nodes have an arbitrary number of children.
@@ -21,7 +24,7 @@ public class LCRSTree<E> implements NAryTree<E> {
 
         private T element; // The element stored in the position
         private TreeNode<T> parent; // The parent of the node
-        private TreeNode<T> leftChild; // The first left children of the node
+        private TreeNode<T> leftChild; // The first left child of the node
         private TreeNode<T> rightSibling; // The next right sibling of the node
         private LCRSTree<T> myTree; // A reference to the tree where the node belongs
 
@@ -31,7 +34,7 @@ public class LCRSTree<E> implements NAryTree<E> {
          * @param t the tree where the node is stored
          * @param e the element to store in the node
          * @param p the parent of the node
-         * @param c the list of children of the node
+         * @param c the first left child of the node
          */
         public TreeNode(LCRSTree<T> t, T e, TreeNode<T> p, TreeNode<T> c) {
             this.element = e;
@@ -165,7 +168,20 @@ public class LCRSTree<E> implements NAryTree<E> {
 
     @Override
     public Iterable<? extends Position<E>> children(Position<E> v) {
-        throw new RuntimeException("Not yet implemented");
+        TreeNode<E> node = checkPosition(v);
+        List<TreeNode<E>> children = new ArrayList<>();
+        // Check if node has child
+        TreeNode<E> leftChild = node.getLeftChild();
+        if (leftChild != null) {
+            children.add(leftChild);
+            // Check if node has more children
+            TreeNode<E> rightSibling = leftChild.getRightSibling();
+            while (rightSibling != null) {
+                children.add(rightSibling);
+                rightSibling = rightSibling.getRightSibling();
+            }
+        }
+        return children;
     }
 
     @Override
@@ -197,7 +213,7 @@ public class LCRSTree<E> implements NAryTree<E> {
 
     @Override
     public Iterator<Position<E>> iterator() {
-        throw new RuntimeException("Not yet implemented");
+        return new BFSIterator<>(this);
     }
 
     @Override
