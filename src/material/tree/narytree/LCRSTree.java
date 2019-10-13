@@ -235,7 +235,21 @@ public class LCRSTree<E> implements NAryTree<E> {
 
     @Override
     public Position<E> add(E element, Position<E> p) {
-        throw new RuntimeException("Not yet implemented");
+        TreeNode<E> parent = checkPosition(p);
+        TreeNode<E> child = parent.getLeftChild();
+        TreeNode<E> newChild = new TreeNode<>(this, element, parent, null);
+        // This node doesn't have a child
+        if (child == null) {
+            parent.setLeftChild(newChild);
+        // Find the last child
+        } else {
+            while (child.getRightSibling() != null) {
+                child = child.getRightSibling();
+            }
+            child.setRightSibling(newChild);
+        }
+        size++;
+        return newChild;
     }
 
     @Override
