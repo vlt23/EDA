@@ -285,6 +285,24 @@ public class LCRSTree<E> implements NAryTree<E> {
 
     @Override
     public void moveSubtree(Position<E> pOrig, Position<E> pDest) throws RuntimeException {
+        TreeNode<E> nOrig = checkPosition(pOrig);
+        TreeNode<E> nDest = checkPosition(pDest);
+        if (nOrig == this.root) {
+            throw new RuntimeException("Root node can't be moved");
+        }
+        if (nOrig == nDest) {
+            throw new RuntimeException("Both positions are the same");
+        }
+        // Check destination node is a subtree of the original one
+        Iterator<Position<E>> it = new BFSIterator<>(this, nOrig);
+        while (it.hasNext()) {
+            TreeNode<E> next = checkPosition(it.next());
+            if (next == nDest) {
+                throw new RuntimeException("Target position can't be a sub tree of origin");
+            }
+        }
+        TreeNode<E> nOrigParent = nOrig.getParent();
+        TreeNode<E> nDestParent = nDest.getParent();
         throw new RuntimeException("Not yet implemented");
     }
 
