@@ -254,7 +254,33 @@ public class LCRSTree<E> implements NAryTree<E> {
 
     @Override
     public void remove(Position<E> p) {
-        throw new RuntimeException("Not yet implemented");
+        TreeNode<E> node = checkPosition(p);
+        if (node == root) {
+            root = null;
+            size = 0;
+        } else {
+            Iterator<Position<E>> it = new BFSIterator<>(this, p);
+            while (it.hasNext()) {
+                TreeNode<E> next = checkPosition(it.next());
+                next.setMyTree(null);
+                size--;
+            }
+            TreeNode<E> parent = node.getParent();
+            TreeNode<E> leftChild = parent.getLeftChild();
+            // The node to remove is the first child
+            if (leftChild == node) {
+                parent.setLeftChild(leftChild.getRightSibling());
+            // Find where is the child
+            } else {
+                TreeNode<E> rightSibling = leftChild;
+                while (rightSibling.getRightSibling() != node) {
+                    rightSibling = rightSibling.getRightSibling();
+                }
+                // Break sibling relation
+                rightSibling.setRightSibling(rightSibling.getRightSibling().getRightSibling());
+            }
+        }
+        node.setMyTree(null);
     }
 
     @Override
