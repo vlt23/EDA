@@ -293,7 +293,7 @@ public class LCRSTree<E> implements NAryTree<E> {
         if (nOrig == nDest) {
             throw new RuntimeException("Both positions are the same");
         }
-        // Check destination node is a subtree of the original one
+        // Check if destination node is a subtree of the original one
         Iterator<Position<E>> it = new BFSIterator<>(this, nOrig);
         while (it.hasNext()) {
             TreeNode<E> next = checkPosition(it.next());
@@ -301,9 +301,32 @@ public class LCRSTree<E> implements NAryTree<E> {
                 throw new RuntimeException("Target position can't be a sub tree of origin");
             }
         }
+
         TreeNode<E> nOrigParent = nOrig.getParent();
-        TreeNode<E> nDestParent = nDest.getParent();
-        throw new RuntimeException("Not yet implemented");
+        TreeNode<E> nOrigParentChild = nOrigParent.getLeftChild();
+        if (nOrigParentChild == nOrig) {
+            // The second child now is the first child (the nOrig's sibling)
+            nOrigParent.setLeftChild(nOrig.getRightSibling());
+        } else {
+            // Find who has sibling relation with nOrig
+            while (nOrigParentChild.getRightSibling() != nOrig) {
+                nOrigParentChild = nOrigParentChild.getRightSibling();
+            }
+            nOrigParentChild.setRightSibling(nOrigParentChild.getRightSibling().getRightSibling());
+        }
+        nOrig.setParent(nDest);
+
+        TreeNode<E> nDestChild = nDest.getLeftChild();
+        if (nDestChild == null) {
+            // nDest doesn't have child, now nOrig is the first
+            nDest.setLeftChild(nOrig);
+        } else {
+            // Find the last child
+            while (nDestChild.getRightSibling() != null) {
+                nDestChild = nDestChild.getRightSibling();
+            }
+            nDestChild.setRightSibling(nOrig);
+        }
     }
 
     /**
