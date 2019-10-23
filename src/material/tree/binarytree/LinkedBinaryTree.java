@@ -130,13 +130,13 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public boolean isEmpty() {
-        return (root == null);
+        return root == null;
     }
 
     @Override
     public boolean isInternal(Position<E> v) {
         checkPosition(v);
-        return (hasLeft(v) || hasRight(v));
+        return hasLeft(v) || hasRight(v);
     }
 
     @Override
@@ -147,19 +147,19 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
     @Override
     public boolean isRoot(Position<E> p) {
         checkPosition(p);
-        return (p == root());
+        return p == root();
     }
 
     @Override
     public boolean hasLeft(Position<E> p) {
         BTNode<E> node = checkPosition(p);
-        return (node.getLeft() != null);
+        return node.getLeft() != null;
     }
 
     @Override
     public boolean hasRight(Position<E> p) {
         BTNode<E> node = checkPosition(p);
-        return (node.getRight() != null);
+        return node.getRight() != null;
     }
 
     @Override
@@ -414,7 +414,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
             node.setRight(r);
             r.setParent(node);
 
-            // T he source tree will be left empty
+            // The source tree will be left empty
             LinkedBinaryTree<E> lbt = (LinkedBinaryTree<E>) tree; // safe cast, checkPosition would fail first
             lbt.root = null;
         }
