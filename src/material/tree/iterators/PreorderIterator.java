@@ -20,6 +20,7 @@ public class PreorderIterator<E> implements Iterator<Position<E>> {
 
     private Deque<Position<E>> nodeStack;
     private final Tree<E> tree;
+    private Predicate<Position<E>> predicate;
 
     public PreorderIterator(Tree<E> tree) {
         nodeStack = new LinkedList<>();
@@ -34,14 +35,19 @@ public class PreorderIterator<E> implements Iterator<Position<E>> {
     }
 
     public PreorderIterator(Tree<E> tree, Position<E> start, Predicate<Position<E>> predicate) {
-        throw new RuntimeException("Not yet implemented");
+        nodeStack = new LinkedList<>();
+        this.tree = tree;
+        this.predicate = predicate;
+        if (predicate.test(start)) {
+            nodeStack.addFirst(start);
+        }
     }
 
     private void _preOrder(Position<E> p) {
         Iterable<Position<E>> childrenI = (Iterable<Position<E>>) tree.children(p);  // TODO
         Deque<Position<E>> children = new LinkedList<>();
-        for (Position<E> ePosition : childrenI) {
-            children.addFirst(ePosition);
+        for (Position<E> child : childrenI) {
+            children.addFirst(child);
         }
         while (!children.isEmpty()) {
             nodeStack.addFirst(children.removeFirst());
@@ -57,6 +63,14 @@ public class PreorderIterator<E> implements Iterator<Position<E>> {
     public Position<E> next() {
         Position<E> aux = nodeStack.removeFirst();
         _preOrder(aux);
+        // If predicate test not passing, ignore current position and pick the next
+        while (predicate != null && !predicate.test(aux)) {
+            aux = nodeStack.removeFirst();
+            _preOrder(aux);
+            if (predicate.test(aux)) {
+                return aux;
+            }
+        }
         return aux;
     }
 
