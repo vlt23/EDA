@@ -5,8 +5,8 @@ import material.Position;
 import java.util.Iterator;
 
 public class ArrayBinaryTree<E> implements BinaryTree<E> {
-    //TODO: Practica 3 Ejercicio 2
 
+    private int size;
 
     @Override
     public Position<E> left(Position<E> v) throws RuntimeException {
@@ -80,12 +80,12 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     @Override
