@@ -74,13 +74,15 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     public Position<E> sibling(Position<E> p) throws RuntimeException {
         BTPos<E> btPos = checkPosition(p);
         BTPos<E> parent = elements[btPos.position / 2];
+        if (parent == null) {
+            throw new RuntimeException("No sibling");
+        }
         if (this.right(parent) != null && this.right(parent) != btPos) {
             return this.right(parent);
         } else if (this.left(parent) != null && this.left(parent) != btPos) {
             return this.left(parent);
-        } else {
-            throw new RuntimeException("No sibling");
         }
+        throw new RuntimeException("No sibling");
     }
 
     @Override
@@ -158,12 +160,20 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public Position<E> root() throws RuntimeException {
-        return null;
+        if (isEmpty()) {
+            throw new RuntimeException("The tree is empty");
+        }
+        return elements[1];
     }
 
     @Override
     public Position<E> parent(Position<E> v) throws RuntimeException {
-        return null;
+        BTPos<E> child = checkPosition(v);
+        BTPos<E> parent = elements[child.position / 2];
+        if (parent == null) {
+            throw new RuntimeException("No parent");
+        }
+        return parent;
     }
 
     @Override
