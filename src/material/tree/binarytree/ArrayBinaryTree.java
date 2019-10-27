@@ -91,6 +91,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
             throw new RuntimeException("Node already has a left child");
         }
         elements[leftChildPos] = new BTPos<>(e, leftChildPos);
+        size++;
         return elements[leftChildPos];
     }
 
@@ -102,6 +103,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
             throw new RuntimeException("Node already has a right child");
         }
         elements[rightChildPos] = new BTPos<>(e, rightChildPos);
+        size++;
         return elements[rightChildPos];
     }
 
