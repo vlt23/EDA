@@ -22,18 +22,18 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     }
 
     private int size;
-    private E[] elements;
+    private BTPos<E>[] elements;
 
     @SuppressWarnings("unchecked")
     public ArrayBinaryTree() {
-        elements = (E[]) new Object[16];
+        elements = (BTPos<E>[]) new Object[16];
         size = 0;
     }
 
     @Override
     public Position<E> left(Position<E> v) throws RuntimeException {
         BTPos<E> btPos = checkPosition(v);
-        BTPos<E> left = new BTPos<>(elements[btPos.position * 2], btPos.position * 2);
+        BTPos<E> left = elements[btPos.position * 2];
         if (left.element == null) {
             throw new RuntimeException("No left child");
         }
@@ -43,7 +43,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     @Override
     public Position<E> right(Position<E> v) throws RuntimeException {
         BTPos<E> btPos = checkPosition(v);
-        BTPos<E> right = new BTPos<>(elements[btPos.position * 2 + 1], btPos.position * 2 + 1);
+        BTPos<E> right = elements[btPos.position * 2 + 1];
         if (right.element == null) {
             throw new RuntimeException("No right child");
         }
@@ -72,7 +72,15 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public Position<E> sibling(Position<E> p) throws RuntimeException {
-        return null;
+        BTPos<E> btPos = checkPosition(p);
+        BTPos<E> parent = elements[btPos.position / 2];
+        if (this.right(parent) != null && this.right(parent) != btPos) {
+            return this.right(parent);
+        } else if (this.left(parent) != null && this.left(parent) != btPos) {
+            return this.left(parent);
+        } else {
+            throw new RuntimeException("No sibling");
+        }
     }
 
     @Override
@@ -82,8 +90,8 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
         if (elements[leftChildPos] != null) {
             throw new RuntimeException("Node already has a left child");
         }
-        elements[leftChildPos] = e;
-        return new BTPos<>(e, leftChildPos);
+        elements[leftChildPos] = new BTPos<>(e, leftChildPos);
+        return elements[leftChildPos];
     }
 
     @Override
@@ -93,8 +101,8 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
         if (elements[rightChildPos] != null) {
             throw new RuntimeException("Node already has a right child");
         }
-        elements[rightChildPos] = e;
-        return new BTPos<>(e, rightChildPos);
+        elements[rightChildPos] = new BTPos<>(e, rightChildPos);
+        return elements[rightChildPos];
     }
 
     @Override
