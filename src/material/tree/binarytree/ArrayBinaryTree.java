@@ -1,36 +1,73 @@
 package material.tree.binarytree;
 
 import material.Position;
+import material.tree.iterators.InorderBinaryTreeIterator;
 
 import java.util.Iterator;
 
 public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
+    private static class BTPos<T> implements Position<T> {
+        private T element;
+        private int position;
+
+        public T getElement() {
+            return element;
+        }
+
+        private BTPos(T element, int position) {
+            this.element = element;
+            this.position = position;
+        }
+    }
+
     private int size;
+    private E[] elements;
+
+    @SuppressWarnings("unchecked")
+    public ArrayBinaryTree() {
+        elements = (E[]) new Object[16];
+        size = 0;
+    }
 
     @Override
     public Position<E> left(Position<E> v) throws RuntimeException {
-        return null;
+        BTPos<E> btPos = checkPosition(v);
+        BTPos<E> left = new BTPos<>(elements[btPos.position * 2], btPos.position * 2);
+        if (left.element == null) {
+            throw new RuntimeException("No left child");
+        }
+        return left;
     }
 
     @Override
     public Position<E> right(Position<E> v) throws RuntimeException {
-        return null;
+        BTPos<E> btPos = checkPosition(v);
+        BTPos<E> right = new BTPos<>(elements[btPos.position * 2 + 1], btPos.position * 2 + 1);
+        if (right.element == null) {
+            throw new RuntimeException("No right child");
+        }
+        return right;
     }
 
     @Override
     public boolean hasLeft(Position<E> v) {
-        return false;
+        BTPos<E> parent = checkPosition(v);
+        return elements[parent.position * 2] != null;
     }
 
     @Override
     public boolean hasRight(Position<E> v) {
-        return false;
+        BTPos<E> parent = checkPosition(v);
+        return elements[parent.position * 2 + 1] != null;
     }
 
     @Override
     public E replace(Position<E> p, E e) {
-        return null;
+        BTPos<E> btPos = checkPosition(p);
+        E oldE = btPos.element;
+        btPos.element = e;
+        return oldE;
     }
 
     @Override
@@ -40,12 +77,24 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public Position<E> insertLeft(Position<E> p, E e) throws RuntimeException {
-        return null;
+        BTPos<E> parent = checkPosition(p);
+        int leftChildPos = parent.position * 2;
+        if (elements[leftChildPos] != null) {
+            throw new RuntimeException("Node already has a left child");
+        }
+        elements[leftChildPos] = e;
+        return new BTPos<>(e, leftChildPos);
     }
 
     @Override
     public Position<E> insertRight(Position<E> p, E e) throws RuntimeException {
-        return null;
+        BTPos<E> parent = checkPosition(p);
+        int rightChildPos = parent.position * 2 + 1;
+        if (elements[rightChildPos] != null) {
+            throw new RuntimeException("Node already has a right child");
+        }
+        elements[rightChildPos] = e;
+        return new BTPos<>(e, rightChildPos);
     }
 
     @Override
@@ -75,7 +124,16 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public boolean isComplete() {
-        return false;
+        InorderBinaryTreeIterator<E> iterator = new InorderBinaryTreeIterator<>(this);
+        while (iterator.hasNext()) {
+            Position<E> p = iterator.next();
+            if (this.isInternal(p)) {
+                if (!this.hasLeft(p) || !this.hasRight(p)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -105,12 +163,12 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public boolean isInternal(Position<E> v) {
-        return false;
+        return this.hasLeft(v) || this.hasRight(v);
     }
 
     @Override
     public boolean isLeaf(Position<E> v) throws RuntimeException {
-        return false;
+        return !this.isInternal(v);
     }
 
     @Override
@@ -125,6 +183,14 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public Iterator<Position<E>> iterator() {
-        return null;
+        return new InorderBinaryTreeIterator<>(this);
     }
+
+    private BTPos<E> checkPosition(Position<E> p) {
+        if (!(p instanceof BTPos)) {
+            throw new RuntimeException("The position is invalid");
+        }
+        return (BTPos<E>) p;
+    }
+
 }
