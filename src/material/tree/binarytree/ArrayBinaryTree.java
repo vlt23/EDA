@@ -26,7 +26,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @SuppressWarnings("unchecked")
     public ArrayBinaryTree() {
-        elements = (BTPos<E>[]) new Object[16];
+        elements = new BTPos[16];
         size = 0;
     }
 
