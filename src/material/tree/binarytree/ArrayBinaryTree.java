@@ -34,7 +34,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     public Position<E> left(Position<E> v) throws RuntimeException {
         BTPos<E> btPos = checkPosition(v);
         BTPos<E> left = elements[btPos.position * 2];
-        if (left.element == null) {
+        if (left == null) {
             throw new RuntimeException("No left child");
         }
         return left;
@@ -44,7 +44,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     public Position<E> right(Position<E> v) throws RuntimeException {
         BTPos<E> btPos = checkPosition(v);
         BTPos<E> right = elements[btPos.position * 2 + 1];
-        if (right.element == null) {
+        if (right == null) {
             throw new RuntimeException("No right child");
         }
         return right;
