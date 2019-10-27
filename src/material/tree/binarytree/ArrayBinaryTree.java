@@ -182,7 +182,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     @Override
     public boolean isRoot(Position<E> v) {
         BTPos<E> btPos = checkPosition(v);
-        return btPos == elements[0];
+        return btPos == elements[1];
     }
 
     @Override
@@ -190,9 +190,9 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
         if (!isEmpty()) {
             throw new RuntimeException("Tree already has a root");
         }
-        elements[0] = new BTPos<>(e, 0);
+        elements[1] = new BTPos<>(e, 1);
         size = 1;
-        return elements[0];
+        return elements[1];
     }
 
     @Override
