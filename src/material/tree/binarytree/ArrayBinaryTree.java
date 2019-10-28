@@ -3,7 +3,10 @@ package material.tree.binarytree;
 import material.Position;
 import material.tree.iterators.InorderBinaryTreeIterator;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
@@ -116,7 +119,15 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public void swap(Position<E> p1, Position<E> p2) {
+        BTPos<E> btPos1 = checkPosition(p1);
+        BTPos<E> btPos2 = checkPosition(p2);
 
+        elements[btPos1.position] = btPos2;
+        int positionOrig2 = btPos2.position;
+        btPos2.position = btPos1.position;
+
+        elements[positionOrig2] = btPos1;
+        btPos1.position = positionOrig2;
     }
 
     @Override
@@ -178,7 +189,14 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public Iterable<? extends Position<E>> children(Position<E> v) {
-        return null;
+        List<Position<E>> children = new ArrayList<>(2);
+        if (this.hasLeft(v)) {
+            children.add(this.left(v));
+        }
+        if (this.hasRight(v)) {
+            children.add(this.right(v));
+        }
+        return Collections.unmodifiableCollection(children);
     }
 
     @Override
