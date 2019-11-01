@@ -38,13 +38,11 @@ public class PreorderIterator<E> implements Iterator<Position<E>> {
         nodeStack = new LinkedList<>();
         this.tree = tree;
         this.predicate = predicate;
-        if (predicate.test(start)) {
-            nodeStack.addFirst(start);
-        }
+        nodeStack.addFirst(start);
     }
 
     private void _preOrder(Position<E> p) {
-        Iterable<Position<E>> childrenI = (Iterable<Position<E>>) tree.children(p);  // TODO
+        Iterable<Position<E>> childrenI = (Iterable<Position<E>>) tree.children(p);
         Deque<Position<E>> children = new LinkedList<>();
         for (Position<E> child : childrenI) {
             children.addFirst(child);

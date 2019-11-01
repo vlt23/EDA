@@ -315,6 +315,7 @@ public class LCRSTree<E> implements NAryTree<E> {
             nOrigParentChild.setRightSibling(nOrigParentChild.getRightSibling().getRightSibling());
         }
         nOrig.setParent(nDest);
+        nOrig.setRightSibling(null);
 
         TreeNode<E> nDestChild = nDest.getLeftChild();
         if (nDestChild == null) {
@@ -338,7 +339,7 @@ public class LCRSTree<E> implements NAryTree<E> {
      */
     private TreeNode<E> checkPosition(Position<E> p)
             throws IllegalStateException {
-        if (p == null || !(p instanceof TreeNode)) {
+        if (!(p instanceof TreeNode)) {
             throw new IllegalStateException("The position is invalid");
         }
         TreeNode<E> aux = (TreeNode<E>) p;
