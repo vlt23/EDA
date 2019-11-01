@@ -4,9 +4,6 @@ package usecase;
 import material.Position;
 import material.tree.binarytree.LinkedBinaryTree;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class MorseTranslator {
 
     private LinkedBinaryTree<Character> morseTranslatorTree;
@@ -60,9 +57,7 @@ public class MorseTranslator {
      * @return a plain text translation of the morse code
      */
     public String decode(String morseMessage) {
-        //ArrayList<Character> messageDecode = new ArrayList<>(morseMessage.length() / 2);
-        Character[] messageDecode = new Character[morseMessage.length()];
-        int messDecPos = 0;
+        StringBuilder messageDecode = new StringBuilder();
         boolean term = false;
         boolean space = true;
         Position<Character> currentPos = morseTranslatorTree.root();
@@ -85,8 +80,7 @@ public class MorseTranslator {
 
             } else {
                 if (space) {
-                    messageDecode[messDecPos] = ' ';
-                    messDecPos++;
+                    messageDecode.append(' ');
                     currentPos = morseTranslatorTree.root();
                 }
                 space = true;
@@ -99,21 +93,14 @@ public class MorseTranslator {
             }
 
             if (term) {
-                messageDecode[messDecPos] = currentPos.getElement();
+                messageDecode.append(currentPos.getElement());
                 term = false;
                 space = false;
-                messDecPos++;
                 currentPos = morseTranslatorTree.root();
             }
         }
-        //return Arrays.toString(messageDecode.toArray()).replace("[", "").replace("]", "");
-        //return String.valueOf(messageDecode).replace("[", "").replace("]", "")
-          //      .replaceAll(",", "");
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < messDecPos; i++) {
-            result.append(messageDecode[i]);
-        }
-        return result.toString();
+
+        return messageDecode.toString();
     }
 
 
