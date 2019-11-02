@@ -1,6 +1,5 @@
 package usecase;
 
-
 import material.Position;
 import material.tree.binarytree.LinkedBinaryTree;
 
@@ -103,7 +102,6 @@ public class MorseTranslator {
         return messageDecode.toString();
     }
 
-
     /**
      * Receives a String with a message in plaintext. This message
      * may contain any character in the charset.
@@ -112,8 +110,51 @@ public class MorseTranslator {
      * @return a morse code message
      */
     public String encode(String plainText) {
-        throw new RuntimeException("Not yet implemented");
+        StringBuilder messageEncode = new StringBuilder();
+        for (int i = 0; i < plainText.length(); i++) {
+            StringBuilder currentEncode = new StringBuilder();
+            char currentI = plainText.charAt(i);
+            encoding(currentI, morseTranslatorTree.root(), currentEncode);
+            messageEncode.append(currentEncode);
+        }
+        return messageEncode.toString();
     }
 
+    /**
+     * Recursive method to iterate the tree in preOrder. The encode param is updated in each iteration
+     *
+     * @param currentI current letter to encode
+     * @param currentPos current position while iterating
+     * @param encode current text encoded in this currentPos
+     * @return the current letter encoded in morse
+     */
+    private StringBuilder encoding(char currentI, Position<Character> currentPos, StringBuilder encode) {
+        if (currentI == ' ') {
+            encode.append(' ');
+            return encode;
+        }
+        if (currentPos.getElement() != null && currentPos.getElement() == currentI) {
+            if (morseTranslatorTree.hasLeft(currentPos) || morseTranslatorTree.hasRight(currentPos)) {
+                encode.append(' ');
+            }
+            return encode;
+        }
+
+        if (morseTranslatorTree.hasLeft(currentPos)) {
+            encode.append('.');
+            StringBuilder ab = encoding(currentI, morseTranslatorTree.left(currentPos), encode);
+            if (ab == null && morseTranslatorTree.hasRight(currentPos)) {
+                encode.deleteCharAt(encode.length() - 1);
+                encode.append('-');
+                ab = encoding(currentI, morseTranslatorTree.right(currentPos), encode);
+            }
+            if (ab == null) {
+                encode.deleteCharAt(encode.length() - 1);
+            }
+            return ab;
+        }
+
+        return null;
+    }
 
 }
