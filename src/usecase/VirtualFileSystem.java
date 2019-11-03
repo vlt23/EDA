@@ -13,7 +13,8 @@ import java.util.Arrays;
 /**
  * @author vlt23
  *
- * TODO: fallan la mayoria de los test por problemas de espacios y tabulaciones
+ * TODO: fallan la mayoria de los test por problemas de espacios y tabulaciones.
+ * TODO: Otros fallan porque no estan implementados (throw new RuntimeException("Not yet implemented");
  *
  */
 public class VirtualFileSystem {
@@ -105,31 +106,50 @@ public class VirtualFileSystem {
         } catch (IndexOutOfBoundsException e) {
             throw new RuntimeException("Invalid ID.");
         }
-        fileSystem.moveSubtree(fileSystemArrayPos[idFile], fileSystemArrayPos[idTargetFolder]);
-        reOrderFileSystem(fileSystem.root(), 0);
-        fileSystemArrayPos = new Position[1024];
-        fileSystemArrayPos[0] = fileSystem.root();
-        size = 1;
-        reOrderFSArrayPos(fileSystem.root());
+        try {
+            fileSystem.moveSubtree(fileSystemArrayPos[idFile], fileSystemArrayPos[idTargetFolder]);
+            reOrderFileSystem(fileSystem.root(), 0);
+            fileSystemArrayPos = new Position[1024];
+            fileSystemArrayPos[0] = fileSystem.root();
+            size = 1;
+            reOrderFSArrayPos(fileSystem.root());
+        } catch (RuntimeException e) {
+            throw new RuntimeException("A file can't be a subdirectory of itself.");
+        }
     }
 
     public void removeFileById(int idFile) {
-        //fileSystem.remove(fileSystemArrayPos.get(idFile));
+        try {
+            Position<String> removeFile = fileSystemArrayPos[idFile];
+            fileSystem.remove(removeFile);
+            reOrderFileSystem(fileSystem.root(), 0);
+            fileSystemArrayPos = new Position[1024];
+            fileSystemArrayPos[0] = fileSystem.root();
+            size = 1;
+            reOrderFSArrayPos(fileSystem.root());
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Invalid ID.");
+        }
     }
 
     public Iterable<String> findBySubstring(int idStartFile, String substring) {
         ArrayList<String> result = new ArrayList<>();
-        Position<String> findS = fileSystemArrayPos[idStartFile];
-        PreorderIterator<String> it = new PreorderIterator<>(fileSystem, findS);
-        while (it.hasNext()) {
-            Position<String> next = it.next();
-            if (next.getElement().contains(substring)) {
-                String e = next.getElement();
-                e = e.replaceAll("\t", "");
-                result.add(e);
+        try {
+            Position<String> findS = fileSystemArrayPos[idStartFile];
+            PreorderIterator<String> it = new PreorderIterator<>(fileSystem, findS);
+            while (it.hasNext()) {
+                Position<String> next = it.next();
+                if (next.getElement().contains(substring)) {
+                    String e = next.getElement();
+                    e = e.replaceAll("\t", "");
+                    result.add(e);
+                }
             }
+
+            return result;
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Invalid ID.");
         }
-        return result;
     }
 
     public Iterable<String> findBySize(int idStartFile, long minSize, long maxSize) {
@@ -143,7 +163,7 @@ public class VirtualFileSystem {
             aux.add(next.getElement());
             size++;
             if (fileSystem.isLeaf(next)) {
-                if ((minSize <= size) <= maxSize) {
+                if ((minSize <= size) && (size <= maxSize) ) {
                     result.addAll(aux);
                     aux = new ArrayList<>();
                     size = 0;
@@ -154,10 +174,20 @@ public class VirtualFileSystem {
     }
 
     public String getFileVirtualPath(int idFile) {
+        try {
+            Position<String> filePos = fileSystemArrayPos[idFile];
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Invalid ID.");
+        }
         throw new RuntimeException("Not yet implemented");
     }
 
     public String getFilePath(int idFile) {
+        try {
+            Position<String> filePos = fileSystemArrayPos[idFile];
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Invalid ID.");
+        }
         throw new RuntimeException("Not yet implemented");
     }
 
