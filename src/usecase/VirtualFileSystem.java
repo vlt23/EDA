@@ -60,8 +60,41 @@ public class VirtualFileSystem {
         return fileSystem.toString();
     }
 
+    private void reOrderFileSystem(Position<String> position, int level) {
+        StringBuilder tab = new StringBuilder();
+        for (int i = 0; i < level; i++) {
+            tab.append('\t');
+        }
+        for (Position<String> child : fileSystem.children(position)) {
+            String element = position.getElement();
+            String elementWithoutTab = element.replaceAll("\t", "");
+            fileSystem.replace(position, tab + elementWithoutTab);
+            level = level + 1;
+            reOrderFileSystem(child, level);
+            level = level - 1;
+        }
+    }
+
+    private void reOrderFSArrayPos(Position<String> parent) {
+        for (Position<String> child : fileSystem.children(parent)) {
+            fileSystemArrayPos.add(child);
+            reOrderFSArrayPos(child);
+        }
+    }
+
     public void moveFileById(int idFile, int idTargetFolder) {
-        throw new RuntimeException("Not yet implemented");
+        try {
+            if (fileSystemArrayPos.get(idFile) == null || fileSystemArrayPos.get(idTargetFolder) == null) {
+                throw new RuntimeException("Invalid ID");
+            }
+        } catch (IndexOutOfBoundsException e) {
+            throw new RuntimeException("Invalid ID.");
+        }
+        fileSystem.moveSubtree(fileSystemArrayPos.get(idFile), fileSystemArrayPos.get(idTargetFolder));
+        reOrderFileSystem(fileSystem.root(), 0);
+        fileSystemArrayPos = new ArrayList<>();
+        fileSystemArrayPos.add(fileSystem.root());
+        reOrderFSArrayPos(fileSystem.root());
     }
 
     public void removeFileById(int idFile) {
