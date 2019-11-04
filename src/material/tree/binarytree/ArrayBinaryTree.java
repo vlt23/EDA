@@ -114,7 +114,51 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public E remove(Position<E> p) throws RuntimeException {
-        return null;
+        BTPos<E> btPos = checkPosition(p);
+        BTPos<E> leftChild = elements[btPos.position * 2];
+        BTPos<E> rightChild = elements[btPos.position * 2 + 1];
+        if (leftChild != null && rightChild != null) {
+            throw new RuntimeException("Cannot remove node with two children");
+        }
+        E aux = btPos.getElement();
+
+        if (this.isInternal(btPos)) {
+            BTPos<E> child = leftChild != null ? leftChild : rightChild;
+            child.position = child.position / 2;
+            elements[btPos.position] = child;
+            reOrder(btPos.position * 2, btPos.position);
+        // If p is leaf, doesn't need re-order his children (no child)
+        } else {
+            elements[btPos.position] = null;
+        }
+
+        size--;
+        return aux;
+    }
+
+    private void reOrder(int currentPos, int parentPos) {
+        BTPos<E> childLeft = elements[currentPos * 2];
+        if (childLeft != null) {
+            childLeft.position = parentPos * 2;
+            elements[parentPos * 2] = childLeft;
+            if (this.isInternal(childLeft)) {
+                reOrder(childLeft.position, childLeft.position / 2);
+                reOrder(childLeft.position + 1, childLeft.position / 2);
+            } else {
+                elements[currentPos] = null;
+            }
+        }
+        BTPos<E> childRight = elements[(currentPos + 1) * 2];
+        if (childRight != null) {
+            childRight.position = parentPos * 2 + 1;
+            elements[parentPos * 2 + 1] = childRight;
+            if (this.isInternal(childRight)) {
+                reOrder(childRight.position, childRight.position / 2);
+                reOrder(childRight.position + 1, childRight.position / 2);
+            } else {
+                elements[currentPos] = null;
+            }
+        }
     }
 
     @Override
@@ -130,19 +174,65 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
         btPos1.position = positionOrig2;
     }
 
+    /**
+     * Test not passing. Porque he creado otro position en vez de reutilizar?
+     * @param v new root node
+     * @return
+     */
     @Override
     public BinaryTree<E> subTree(Position<E> v) {
-        return null;
+        BinaryTree<E> newSubTree = new ArrayBinaryTree<>();
+        BTPos<E> newRoot = checkPosition(v);
+        Position<E> newRootPos = newSubTree.addRoot(newRoot.getElement());
+        subTreeing(newSubTree, v, newRootPos);
+        return newSubTree;
+    }
+
+    private void subTreeing(BinaryTree<E> newSubTree, Position<E> btPosOrig, Position<E> btPosDest) {
+        if (this.hasLeft(btPosOrig)) {
+            Position<E> leftChildOrig = this.left(btPosOrig);
+            Position<E> leftChildDest = newSubTree.insertLeft(btPosDest, leftChildOrig.getElement());
+            subTreeing(newSubTree, leftChildOrig, leftChildDest);
+        }
+        if (this.hasRight(btPosOrig)) {
+            Position<E> rightChildOrig = this.right(btPosOrig);
+            Position<E> rightChildDest = newSubTree.insertRight(btPosDest, rightChildOrig.getElement());
+            subTreeing(newSubTree, rightChildOrig, rightChildDest);
+        }
     }
 
     @Override
     public void attachLeft(Position<E> p, BinaryTree<E> tree) throws RuntimeException {
+        BTPos<E> btPos = checkPosition(p);
+        if (tree == this) {
+            throw new RuntimeException("Cannot attach a tree over himself");
+        }
+        if (this.hasLeft(p)) {
+            throw new RuntimeException("Node already has a left child");
+        }
 
+        if (tree != null && !tree.isEmpty()) {
+            BTPos<E> r = checkPosition(tree.root());
+            elements[btPos.position * 2] = r;
+            // TODO
+        }
     }
 
     @Override
     public void attachRight(Position<E> p, BinaryTree<E> tree) throws RuntimeException {
+        BTPos<E> btPos = checkPosition(p);
+        if (tree == this) {
+            throw new RuntimeException("Cannot attach a tree over himself");
+        }
+        if (this.hasRight(p)) {
+            throw new RuntimeException("Node already has a right child");
+        }
 
+        if (tree != null && !tree.isEmpty()) {
+            BTPos<E> r = checkPosition(tree.root());
+            elements[btPos.position * 2 + 1] = r;
+            // TODO
+        }
     }
 
     @Override
