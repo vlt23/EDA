@@ -1,7 +1,7 @@
 package material.maps;
 
 /**
- * @param <K> The hey
+ * @param <K> The key
  * @param <V> The stored value
  */
 public class HashTableMapDH<K, V> extends AbstractHashTableMap<K, V> {
@@ -20,7 +20,16 @@ public class HashTableMapDH<K, V> extends AbstractHashTableMap<K, V> {
 
     @Override
     protected int offset(K key, int i) {
-        //TODO: Practica 4 Ejercicio 1
-        throw new RuntimeException("Not yet implemented.");
+        int prime = findPrimeMinorThatN();
+        return (prime - (key.hashCode() % prime)) * i;
+    }
+
+    private int findPrimeMinorThatN() {
+        int[] somePrimes = {997, 523, 223, 73, 23, 7, 3};
+        int i = 0;
+        while (super.capacity < somePrimes[i]) {
+            i++;
+        }
+        return somePrimes[i];
     }
 }

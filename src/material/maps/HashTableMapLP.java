@@ -1,7 +1,7 @@
 package material.maps;
 
 /**
- * @param <K> The hey
+ * @param <K> The key
  * @param <V> The stored value
  */
 public class HashTableMapLP<K, V> extends AbstractHashTableMap<K, V> {
@@ -24,8 +24,7 @@ public class HashTableMapLP<K, V> extends AbstractHashTableMap<K, V> {
 
     @Override
     protected int offset(K key, int i) {
-        //TODO: Practica 4 Ejercicio 1
-        throw new RuntimeException("Not yet implemented.");
+        return i;
     }
 
 }
