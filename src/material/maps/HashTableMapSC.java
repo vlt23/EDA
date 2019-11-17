@@ -200,6 +200,13 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
             bucket[index].get(pos).setValue(value);
             return valueToReturn;
         }
+        if (n >= capacity / 2) {
+            rehash(capacity * 2);
+            index = hashValue(key);
+            if (bucket[index] == null) {
+                bucket[index] = new ArrayList<>();
+            }
+        }
         bucket[index].add(new HashEntry<>(key, value));
         n++;
         return null;
@@ -266,7 +273,26 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
      * Increase/reduce the size of the hash table and rehashes all the entries.
      */
     protected void rehash(int newCap) {
-        throw new RuntimeException("Not yet implemented.");
+        if (newCap < this.size() * 2) {
+            return;
+        }
+        capacity = newCap;
+        ArrayList<HashEntry<K, V>>[] old = bucket;
+        bucket = (ArrayList<HashEntry<K,V>>[]) new ArrayList[capacity];
+        Random rand = new Random();
+        scale = rand.nextInt(prime - 1) + 1;
+        shift = rand.nextInt(prime);
+        for (ArrayList<HashEntry<K, V>> entryList : old) {
+            if (entryList != null) {
+                for (HashEntry<K, V> entry : entryList) {
+                    int index = hashValue(entry.getKey());
+                    if (bucket[index] == null) {
+                        bucket[index] = new ArrayList<>();
+                    }
+                    bucket[index].add(entry);
+                }
+            }
+        }
     }
 
 }
