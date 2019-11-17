@@ -152,7 +152,7 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
         this.prime = p;
         this.capacity = cap;
         this.n = 0;
-        this.bucket = (ArrayList<HashEntry<K, V>>[]) new ArrayList[16];
+        this.bucket = (ArrayList<HashEntry<K, V>>[]) new ArrayList[capacity];
         Random rand = new Random();
         this.scale = rand.nextInt(prime - 1) + 1;
         this.shift = rand.nextInt(prime);
@@ -220,6 +220,9 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
     }
 
     private int findKey(int index, K key) {
+        if (bucket[index] == null) {
+            bucket[index] = new ArrayList<>();
+        }
         for (int i = 0; i < bucket[index].size(); i++) {
             if (bucket[index].get(i).getKey() == key) {
                 return i;
