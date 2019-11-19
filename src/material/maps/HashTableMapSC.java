@@ -231,7 +231,7 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
             bucket[index] = new ArrayList<>();
         }
         for (int i = 0; i < bucket[index].size(); i++) {
-            if (bucket[index].get(i).getKey() == key) {
+            if (bucket[index].get(i).getKey().equals(key)) {
                 return i;
             }
         }
@@ -277,12 +277,12 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
             return;
         }
         capacity = newCap;
-        ArrayList<HashEntry<K, V>>[] old = bucket;
+        List<HashEntry<K, V>>[] old = bucket;
         bucket = (ArrayList<HashEntry<K,V>>[]) new ArrayList[capacity];
         Random rand = new Random();
         scale = rand.nextInt(prime - 1) + 1;
         shift = rand.nextInt(prime);
-        for (ArrayList<HashEntry<K, V>> entryList : old) {
+        for (List<HashEntry<K, V>> entryList : old) {
             if (entryList != null) {
                 for (HashEntry<K, V> entry : entryList) {
                     int index = hashValue(entry.getKey());
