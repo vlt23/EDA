@@ -1,86 +1,101 @@
 package usecase;
 
+import java.util.Calendar;
 
 public class Flight {
 
-    public Flight(){
+    // Flight's identification
+    private String company;
+    private int flightCode;
+    private Calendar flightDate;
+
+    private int capacity;
+
+    private String origin;
+    private String destination;
+
+    // in minutes
+    private int delay;
+
+    public Flight() {
 
     }
 
     public void setTime(int hours, int minutes) {
-        throw new RuntimeException("Not yet implemented.");
+        flightDate.set(flightDate.get(Calendar.YEAR), flightDate.get(Calendar.MONTH),
+                flightDate.get(Calendar.DAY_OF_MONTH), hours, minutes);
     }
 
     public int getHours() {
-        throw new RuntimeException("Not yet implemented.");
+        return flightDate.get(Calendar.HOUR_OF_DAY);
     }
 
     public int getMinutes() {
-        throw new RuntimeException("Not yet implemented.");
+        return flightDate.get(Calendar.MINUTE);
     }
 
     public String getCompany() {
-        throw new RuntimeException("Not yet implemented.");
+        return company;
     }
 
     public void setCompany(String company) {
-        throw new RuntimeException("Not yet implemented.");
+        this.company = company;
     }
 
     public int getFlightCode() {
-        throw new RuntimeException("Not yet implemented.");
+        return flightCode;
     }
 
-    public void setFlightCode(int flightCode){throw new RuntimeException("Not yet implemented.");
+    public void setFlightCode(int flightCode) {
+        this.flightCode = flightCode;
     }
 
     public void setDate(int year, int month, int day) {
-        throw new RuntimeException("Not yet implemented.");
+        flightDate.set(year, month, day);
     }
 
     public int getYear() {
-        throw new RuntimeException("Not yet implemented.");
+        return flightDate.get(Calendar.YEAR);
     }
 
     public int getMonth() {
-        throw new RuntimeException("Not yet implemented.");
+        return flightDate.get(Calendar.MONTH);
     }
 
     public int getDay() {
-        throw new RuntimeException("Not yet implemented.");
+        return flightDate.get(Calendar.DAY_OF_MONTH);
     }
 
-
     public int getCapacity() {
-        throw new RuntimeException("Not yet implemented.");
+        return capacity;
     }
 
     public void setCapacity(int capacity) {
-        throw new RuntimeException("Not yet implemented.");
+        this.capacity = capacity;
     }
 
     public String getOrigin() {
-        throw new RuntimeException("Not yet implemented.");
+        return origin;
     }
 
     public void setOrigin(String origin) {
-        throw new RuntimeException("Not yet implemented.");
+        this.origin = origin;
     }
 
     public String getDestination() {
-        throw new RuntimeException("Not yet implemented.");
+        return destination;
     }
 
     public void setDestination(String destination) {
-        throw new RuntimeException("Not yet implemented.");
+        this.destination = destination;
     }
 
     public int getDelay() {
-        throw new RuntimeException("Not yet implemented.");
+        return delay;
     }
 
     public void setDelay(int delay) {
-        throw new RuntimeException("Not yet implemented.");
+        this.delay = delay;
     }
 
     public void setProperty(String attribute, String value) {
@@ -94,6 +109,5 @@ public class Flight {
     public Iterable<String> getAllAttributes() {
         throw new RuntimeException("Not yet implemented.");
     }
-
 
 }
