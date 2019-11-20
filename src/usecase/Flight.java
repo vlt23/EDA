@@ -1,5 +1,7 @@
 package usecase;
 
+import material.maps.HashTableMapDH;
+
 import java.util.Calendar;
 
 public class Flight {
@@ -17,8 +19,10 @@ public class Flight {
     // in minutes
     private int delay;
 
-    public Flight() {
+    private HashTableMapDH<String, String> properties;
 
+    public Flight() {
+        properties = new HashTableMapDH<>();
     }
 
     public void setTime(int hours, int minutes) {
@@ -99,15 +103,15 @@ public class Flight {
     }
 
     public void setProperty(String attribute, String value) {
-        throw new RuntimeException("Not yet implemented.");
+        properties.put(attribute, value);
     }
 
     public String getProperty(String attribute) {
-        throw new RuntimeException("Not yet implemented.");
+        return properties.get(attribute);
     }
 
     public Iterable<String> getAllAttributes() {
-        throw new RuntimeException("Not yet implemented.");
+        return properties.keys();
     }
 
 }
