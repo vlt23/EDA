@@ -1,31 +1,33 @@
 package usecase;
 
-
 public class Passenger {
 
+    private String DNI;
+    private String name;
+    private String surname;
 
     public String getDNI() {
-        throw new RuntimeException("Not yet implemented.");
+        return DNI;
     }
 
     public void setDNI(String dni) {
-        throw new RuntimeException("Not yet implemented.");
+        this.DNI = dni;
     }
 
     public String getName() {
-        throw new RuntimeException("Not yet implemented.");
+        return name;
     }
 
     public void setName(String name) {
-        throw new RuntimeException("Not yet implemented.");
+        this.name = name;
     }
 
     public String getSurname() {
-        throw new RuntimeException("Not yet implemented.");
+        return surname;
     }
 
     public void setSurname(String surname) {
-        throw new RuntimeException("Not yet implemented.");
+        this.surname = surname;
     }
 
 }
