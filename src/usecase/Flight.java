@@ -3,6 +3,7 @@ package usecase;
 import material.maps.HashTableMapDH;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 public class Flight {
 
@@ -112,6 +113,35 @@ public class Flight {
 
     public Iterable<String> getAllAttributes() {
         return properties.keys();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Flight flight = (Flight) o;
+        return flightCode == flight.flightCode &&
+                company.equals(flight.company) &&
+                flightDate.equals(flight.flightDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(company, flightCode, flightDate);
+    }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "company='" + company + '\'' +
+                ", flightCode=" + flightCode +
+                ", flightDate=" + flightDate +
+                ", capacity=" + capacity +
+                ", origin='" + origin + '\'' +
+                ", destination='" + destination + '\'' +
+                ", delay=" + delay +
+                ", properties=" + properties +
+                '}';
     }
 
 }
