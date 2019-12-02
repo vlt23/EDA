@@ -101,7 +101,7 @@ public class VirtualFileSystem {
     public void moveFileById(int idFile, int idTargetFolder) {
         try {
             if (fileSystemArrayPos[idFile] == null || fileSystemArrayPos[idTargetFolder] == null) {
-                throw new RuntimeException("Invalid ID");
+                throw new RuntimeException("Invalid ID.");
             }
         } catch (IndexOutOfBoundsException e) {
             throw new RuntimeException("Invalid ID.");
@@ -152,6 +152,13 @@ public class VirtualFileSystem {
         }
     }
 
+    /**
+     * No entender??? TODO
+     * @param idStartFile
+     * @param minSize
+     * @param maxSize
+     * @return
+     */
     public Iterable<String> findBySize(int idStartFile, long minSize, long maxSize) {
         ArrayList<String> result = new ArrayList<>();
         ArrayList<String> aux = new ArrayList<>();
