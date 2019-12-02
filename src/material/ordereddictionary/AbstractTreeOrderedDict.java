@@ -187,10 +187,10 @@ abstract public class AbstractTreeOrderedDict<K, V> implements
      * Removes and returns a given entry.
      */
     @Override
-    public void remove(Entry<K, V> ent) {        
+    public Entry<K, V> remove(Entry<K, V> ent) {
         DictEntry<K, V> entry = checkEntry(ent);
         Position<Entry<K, V>> p = entry.position();
-        this.bsTree.remove(p);
+        return this.bsTree.remove(p);
     }
 
     public Iterable<Entry<K, V>> findRange(K minkey, K maxkey) {

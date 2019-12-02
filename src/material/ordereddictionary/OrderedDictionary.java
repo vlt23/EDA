@@ -47,7 +47,7 @@ public interface OrderedDictionary<K, V> {
      * Removes and returns the given entry from the dictionary.
      * @param e
      */
-    void remove(Entry<K, V> e);
+    Entry<K, V> remove(Entry<K, V> e);
 
     /**
      * Find range in ordered dictionaries.
