@@ -56,18 +56,46 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
 
     private static class HashTableMapIterator<T, U> implements Iterator<Entry<T, U>> {
 
+        private int index;  // the bucket array index
+        private int pos;  // the list pos
+        private List<HashEntry<T, U>>[] bucket;
+
         public HashTableMapIterator(List<HashEntry<T, U>>[] map, int numElems) {
-            throw new RuntimeException("Not yet implemented.");
+            this.bucket = map;
+            this.pos = 0;
+            if (numElems == 0) {
+                this.index = bucket.length;
+            } else {
+                this.index = 0;
+                goToNextElement();
+            }
+        }
+
+        private void goToNextElement() {
+            if (bucket[index] != null && this.pos < bucket[index].size() - 1) {
+                this.pos++;
+            } else {
+                this.pos = 0;
+                this.index++;
+                while (this.index < bucket.length && this.bucket[index] == null) {
+                    this.index++;
+                }
+            }
         }
 
         @Override
         public boolean hasNext() {
-            throw new RuntimeException("Not yet implemented.");
+            return this.index < this.bucket.length;
         }
 
         @Override
         public Entry<T, U> next() {
-            throw new RuntimeException("Not yet implemented.");
+            if (hasNext()) {
+                Entry<T, U> toReturn = this.bucket[index].get(pos);
+                goToNextElement();
+                return toReturn;
+            }
+            throw new IllegalStateException("The map has not more elements");
         }
 
         @Override
@@ -79,18 +107,20 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
 
     private static class HashTableMapKeyIterator<T, U> implements Iterator<T> {
 
+        private HashTableMapIterator<T, U> it;
+
         public HashTableMapKeyIterator(HashTableMapIterator<T, U> it) {
-            throw new RuntimeException("Not yet implemented.");
+            this.it = it;
         }
 
         @Override
         public T next() {
-            throw new RuntimeException("Not yet implemented.");
+            return it.next().getKey();
         }
 
         @Override
         public boolean hasNext() {
-            throw new RuntimeException("Not yet implemented.");
+            return it.hasNext();
         }
 
         @Override
@@ -101,18 +131,20 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
 
     private static class HashTableMapValueIterator<T, U> implements Iterator<U> {
 
+        private HashTableMapIterator<T, U> it;
+
         public HashTableMapValueIterator(HashTableMapIterator<T, U> it) {
-            throw new RuntimeException("Not yet implemented.");
+            this.it = it;
         }
 
         @Override
         public U next() {
-            throw new RuntimeException("Not yet implemented.");
+            return it.next().getValue();
         }
 
         @Override
         public boolean hasNext() {
-            throw new RuntimeException("Not yet implemented.");
+            return it.hasNext();
         }
 
         @Override
@@ -240,22 +272,37 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
 
     @Override
     public Iterator<Entry<K, V>> iterator() {
-        throw new RuntimeException("Not yet implemented.");
+        return new HashTableMapIterator<>(this.bucket, this.n);
     }
 
     @Override
     public Iterable<K> keys() {
-        throw new RuntimeException("Not yet implemented.");
+        return new Iterable<K>() {
+            @Override
+            public Iterator<K> iterator() {
+                return new HashTableMapKeyIterator<>(new HashTableMapIterator<>(bucket, n));
+            }
+        };
     }
 
     @Override
     public Iterable<V> values() {
-        throw new RuntimeException("Not yet implemented.");
+        return new Iterable<V>() {
+            @Override
+            public Iterator<V> iterator() {
+                return new HashTableMapValueIterator<>(new HashTableMapIterator<>(bucket, n));
+            }
+        };
     }
 
     @Override
     public Iterable<Entry<K, V>> entries() {
-        throw new RuntimeException("Not yet implemented.");
+        return new Iterable<Entry<K, V>>() {
+            @Override
+            public Iterator<Entry<K, V>> iterator() {
+                return new HashTableMapIterator<>(bucket, n);
+            }
+        };
     }
 
     /**
