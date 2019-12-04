@@ -4,30 +4,31 @@ import material.maps.HashTableMapDH;
 
 public class FlightManager {
 
-    private HashTableMapDH<Integer, Flight> flightsMap;
+    private HashTableMapDH<Flight, Flight> flightsMap;
 
     public Flight addFlight(String company, int flightCode, int year, int month, int day) {
-        Flight flight = new Flight();
-        flight.setCompany(company);
-        flight.setFlightCode(flightCode);
-        flight.setDate(year, month, day);
-        flightsMap.put(calculateKey(company, flightCode, year, month, day), flight);
+        Flight flight = new Flight(company, flightCode, year, month, day);
+        flightsMap.put(flight, flight);
         return flight;
     }
 
     public Flight getFlight(String company, int flightCode, int year, int month, int day) {
-        return flightsMap.get(calculateKey(company, flightCode, year, month, day));
+        return flightsMap.get(new Flight(company, flightCode, year, month, day));
     }
 
     public void updateFlight(String company, int flightCode, int year, int month, int day, Flight updatedFlightInfo) {
-        Flight flight = flightsMap.get(calculateKey(company, flightCode, year, month, day));
-        flight.setCapacity(updatedFlightInfo.getCapacity());
-        flight.setOrigin(updatedFlightInfo.getOrigin());
-        flight.setDestination(updatedFlightInfo.getDestination());
-        flight.setDelay(updatedFlightInfo.getDelay());
+        Flight currentFlight = flightsMap.get(new Flight(company, flightCode, year, month, day));
+        if (!currentFlight.equals(updatedFlightInfo)) {
+            flightsMap.remove(currentFlight);
+            currentFlight = new Flight(company, flightCode, year, month, day);
+        }
+        currentFlight.setCapacity(updatedFlightInfo.getCapacity());
+        currentFlight.setOrigin(updatedFlightInfo.getOrigin());
+        currentFlight.setDestination(updatedFlightInfo.getDestination());
+        currentFlight.setDelay(updatedFlightInfo.getDelay());
         Iterable<String> properties = updatedFlightInfo.getAllAttributes();
         for (String property : properties) {
-            flight.setProperty(property, updatedFlightInfo.getProperty(property));
+            currentFlight.setProperty(property, updatedFlightInfo.getProperty(property));
         }
     }
 

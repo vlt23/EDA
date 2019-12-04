@@ -26,6 +26,13 @@ public class Flight {
         properties = new HashTableMapDH<>();
     }
 
+    Flight(String company, int flightCode, int year, int month, int day) {
+        this.company = company;
+        this.flightCode = flightCode;
+        this.setDate(year, month, day);
+        properties = new HashTableMapDH<>();
+    }
+
     public void setTime(int hours, int minutes) {
         flightDate.set(flightDate.get(Calendar.YEAR), flightDate.get(Calendar.MONTH),
                 flightDate.get(Calendar.DAY_OF_MONTH), hours, minutes);
