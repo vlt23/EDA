@@ -2,6 +2,9 @@ package usecase;
 
 import material.maps.HashTableMapDH;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FlightManager {
 
     private HashTableMapDH<Flight, Flight> flightsMap;
@@ -41,7 +44,14 @@ public class FlightManager {
     }
 
     public Iterable<Flight> flightsByDate(int year, int month, int day) {
-        throw new RuntimeException("Not yet implemented.");
+        Iterable<Flight> flights = flightsMap.values();
+        List<Flight> toReturnFlights = new ArrayList<>();
+        for (Flight flight : flights) {
+            if (flight.compareDate(year, month, day)) {
+                toReturnFlights.add(flight);
+            }
+        }
+        return toReturnFlights;
     }
 
     public Iterable<Flight> getFlightsByPassenger(Passenger passenger) {
@@ -53,9 +63,9 @@ public class FlightManager {
 
     }
 
-    private int calculateKey(String company, int flightCode, int year, int month, int day) {
+    /*private int calculateKey(String company, int flightCode, int year, int month, int day) {
         return company.hashCode() + Integer.hashCode(flightCode)
                 + Integer.hashCode(year) + Integer.hashCode(month) + Integer.hashCode(day);
-    }
+    }*/
 
 }

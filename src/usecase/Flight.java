@@ -63,6 +63,7 @@ public class Flight {
     }
 
     public void setDate(int year, int month, int day) {
+        flightDate = Calendar.getInstance();
         flightDate.set(year, month, day);
     }
 
@@ -76,6 +77,11 @@ public class Flight {
 
     public int getDay() {
         return flightDate.get(Calendar.DAY_OF_MONTH);
+    }
+
+    boolean compareDate(int year, int month, int day) {
+        return flightDate.get(Calendar.YEAR) == year && flightDate.get(Calendar.MONTH) == month
+                && flightDate.get(Calendar.DAY_OF_MONTH) == day;
     }
 
     public int getCapacity() {
