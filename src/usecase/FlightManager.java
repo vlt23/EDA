@@ -5,9 +5,15 @@ import material.maps.HashTableMapDH;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author vlt23
+ */
 public class FlightManager {
 
     private HashTableMapDH<Flight, Flight> flightsMap;
+    private HashTableMapDH<Passenger, Passenger> passengersMap;
+    private HashTableMapDH<Flight, List<Passenger>> flightWithAllPassengersMap;
+    private HashTableMapDH<Passenger, List<Flight>> passengerWithAllFlightsMap;
 
     public Flight addFlight(String company, int flightCode, int year, int month, int day) {
         Flight flight = new Flight(company, flightCode, year, month, day);
@@ -36,11 +42,25 @@ public class FlightManager {
     }
 
     public void addPassenger(String dni, String name, String surname, Flight flight) {
-        throw new RuntimeException("Not yet implemented.");
+        Passenger passenger = new Passenger(dni, name, surname);
+        Passenger currentPassenger = passengersMap.get(passenger);
+        if (currentPassenger != null) {  // old passenger
+            if (!currentPassenger.equals(passenger)) {
+                passengersMap.remove(currentPassenger);
+                passengersMap.put(passenger, passenger);
+            }
+        } else {  // new passenger
+            passengersMap.put(passenger, passenger);
+        }
+        flightWithAllPassengersMap.get(flight).add(passenger);
+        List<Flight> allFlights = passengerWithAllFlightsMap.get(passenger);
+        allFlights.add(flight);
+        passengerWithAllFlightsMap.put(passenger, allFlights);
     }
 
     public Iterable<Passenger> getPassengers(String company, int flightCode, int year, int month, int day) {
-        throw new RuntimeException("Not yet implemented.");
+        Flight flight = new Flight(company, flightCode, year, month, day);
+        return flightWithAllPassengersMap.get(flight);
     }
 
     public Iterable<Flight> flightsByDate(int year, int month, int day) {
@@ -55,12 +75,17 @@ public class FlightManager {
     }
 
     public Iterable<Flight> getFlightsByPassenger(Passenger passenger) {
-        throw new RuntimeException("Not yet implemented.");
+        return passengerWithAllFlightsMap.get(passenger);
     }
 
     public Iterable<Flight> getFlightsByDestination(String destination, int year, int month, int day) {
-        throw new RuntimeException("Not yet implemented.");
-
+        List<Flight> flights = new ArrayList<>();
+        for (Flight flight : flightsMap.values()) {
+            if (flight.getDestination().equals(destination) && flight.compareDate(year, month, day)) {
+                flights.add(flight);
+            }
+        }
+        return flights;
     }
 
     /*private int calculateKey(String company, int flightCode, int year, int month, int day) {

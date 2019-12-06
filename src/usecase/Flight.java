@@ -5,6 +5,9 @@ import material.maps.HashTableMapDH;
 import java.util.Calendar;
 import java.util.Objects;
 
+/**
+ * @author vlt23
+ */
 public class Flight {
 
     // Flight's identification
