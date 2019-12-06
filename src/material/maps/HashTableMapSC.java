@@ -9,7 +9,7 @@ import java.util.Random;
  * Separate chaining table implementation of hash tables. Note that all
  * "matching" is based on the equals method.
  *
- * @author A. Duarte, J. Vélez, J. Sánchez-Oro, JD. Quintana
+ * @author A. Duarte, J. Vélez, J. Sánchez-Oro, JD. Quintana, vlt23
  */
 public class HashTableMapSC<K, V> implements Map<K, V> {
 
@@ -101,7 +101,6 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
         @Override
         public void remove() {
             throw new UnsupportedOperationException("Not implemented.");
-
         }
     }
 
@@ -156,7 +155,7 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
     private int n;
     private int prime, capacity;
     private long scale, shift;
-    private ArrayList<HashEntry<K, V>>[] bucket;
+    private List<HashEntry<K, V>>[] bucket;
 
     /**
      * Creates a hash table with prime factor 109345121 and capacity 1000.
@@ -200,7 +199,6 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
         return (int) ((Math.abs(key.hashCode() * scale + shift) % prime) % capacity);
     }
 
-
     @Override
     public int size() {
         return n;
@@ -228,9 +226,8 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
         int index = hashValue(key);
         int pos = findKey(index, key);
         if (pos != -1) {
-            V valueToReturn = bucket[index].get(pos).getValue();
-            bucket[index].get(pos).setValue(value);
-            return valueToReturn;
+            // setValue return the old value
+            return bucket[index].get(pos).setValue(value);
         }
         if (n >= capacity / 2) {
             rehash(capacity * 2);
@@ -277,32 +274,17 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
 
     @Override
     public Iterable<K> keys() {
-        return new Iterable<K>() {
-            @Override
-            public Iterator<K> iterator() {
-                return new HashTableMapKeyIterator<>(new HashTableMapIterator<>(bucket, n));
-            }
-        };
+        return () -> new HashTableMapKeyIterator<>(new HashTableMapIterator<>(bucket, n));
     }
 
     @Override
     public Iterable<V> values() {
-        return new Iterable<V>() {
-            @Override
-            public Iterator<V> iterator() {
-                return new HashTableMapValueIterator<>(new HashTableMapIterator<>(bucket, n));
-            }
-        };
+        return () -> new HashTableMapValueIterator<>(new HashTableMapIterator<>(bucket, n));
     }
 
     @Override
     public Iterable<Entry<K, V>> entries() {
-        return new Iterable<Entry<K, V>>() {
-            @Override
-            public Iterator<Entry<K, V>> iterator() {
-                return new HashTableMapIterator<>(bucket, n);
-            }
-        };
+        return () -> new HashTableMapIterator<>(bucket, n);
     }
 
     /**
@@ -325,7 +307,7 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
         }
         capacity = newCap;
         List<HashEntry<K, V>>[] old = bucket;
-        bucket = (ArrayList<HashEntry<K,V>>[]) new ArrayList[capacity];
+        bucket = (ArrayList<HashEntry<K, V>>[]) new ArrayList[capacity];
         Random rand = new Random();
         scale = rand.nextInt(prime - 1) + 1;
         shift = rand.nextInt(prime);
