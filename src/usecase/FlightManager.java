@@ -1,6 +1,7 @@
 package usecase;
 
 import material.maps.HashTableMapDH;
+import material.maps.Map;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +11,10 @@ import java.util.List;
  */
 public class FlightManager {
 
-    private HashTableMapDH<Flight, Flight> flightsMap;
-    private HashTableMapDH<Passenger, Passenger> passengersMap;
-    private HashTableMapDH<Flight, List<Passenger>> flightWithAllPassengersMap;
-    private HashTableMapDH<Passenger, List<Flight>> passengerWithAllFlightsMap;
+    private Map<Flight, Flight> flightsMap = new HashTableMapDH<>();
+    private Map<Passenger, Passenger> passengersMap = new HashTableMapDH<>();
+    private Map<Flight, List<Passenger>> flightWithAllPassengersMap = new HashTableMapDH<>();
+    private Map<Passenger, List<Flight>> passengerWithAllFlightsMap = new HashTableMapDH<>();
 
     public Flight addFlight(String company, int flightCode, int year, int month, int day) {
         Flight flight = new Flight(company, flightCode, year, month, day);
