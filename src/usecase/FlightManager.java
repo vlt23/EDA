@@ -1,5 +1,6 @@
 package usecase;
 
+import material.maps.Entry;
 import material.maps.HashTableMapDH;
 import material.maps.Map;
 
@@ -28,6 +29,7 @@ public class FlightManager {
 
     public void updateFlight(String company, int flightCode, int year, int month, int day, Flight updatedFlightInfo) {
         Flight currentFlight = flightsMap.get(new Flight(company, flightCode, year, month, day));
+        Flight oldFlight = currentFlight;
         if (!currentFlight.equals(updatedFlightInfo)) {
             flightsMap.remove(currentFlight);
             currentFlight = new Flight(company, flightCode, year, month, day);
@@ -39,6 +41,19 @@ public class FlightManager {
         Iterable<String> properties = updatedFlightInfo.getAllAttributes();
         for (String property : properties) {
             currentFlight.setProperty(property, updatedFlightInfo.getProperty(property));
+        }
+
+        List<Passenger> passengers = flightWithAllPassengersMap.remove(oldFlight);
+        flightWithAllPassengersMap.put(currentFlight, passengers);
+
+        Iterable<Entry<Passenger, List<Flight>>> entries = passengerWithAllFlightsMap.entries();
+        for (Entry<Passenger, List<Flight>> passengerListFlight : entries) {
+            boolean isRemoved = passengerListFlight.getValue().remove(oldFlight);
+            if (isRemoved) {
+                passengerWithAllFlightsMap.remove(passengerListFlight.getKey());
+                passengerListFlight.getValue().add(currentFlight);
+                passengerWithAllFlightsMap.put(passengerListFlight.getKey(), passengerListFlight.getValue());
+            }
         }
     }
 
