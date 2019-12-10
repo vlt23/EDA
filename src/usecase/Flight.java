@@ -149,11 +149,12 @@ public class Flight {
 
     @Override
     public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        String s = flightDate.toLocalDate().format(formatter) + "\t"
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-M-yyyy");
+        DateTimeFormatter hourMinutesFormatter = DateTimeFormatter.ofPattern("H:m");
+        String s = flightDate.toLocalDate().format(dateFormatter) + "\t"
                 + company + flightCode;
         if (!flightDate.toLocalTime().toString().equals("00:00")) {
-            s += "\t" + flightDate.toLocalTime();
+            s += "\t" + flightDate.toLocalTime().format(hourMinutesFormatter);
         }
         if (origin != null && !origin.isEmpty()) {
             s += "\t" + origin;
