@@ -87,7 +87,9 @@ public class FlightManager {
                 passengersMap.remove(dni);
                 passengersMap.put(dni, passenger);
             }
-            flightWithAllPassengersMap.get(flight).remove(currentPassenger);
+            if (flightWithAllPassengersMap.get(flight) != null) {
+                flightWithAllPassengersMap.get(flight).remove(currentPassenger);
+            }
         } else {  // new passenger
             passengersMap.put(dni, passenger);
         }
@@ -126,7 +128,12 @@ public class FlightManager {
     }
 
     public Iterable<Flight> getFlightsByPassenger(Passenger passenger) {
-        return passengerWithAllFlightsMap.get(passenger);
+        Passenger currentPassenger = passengersMap.get(passenger.getDNI());
+        if (currentPassenger != null) {
+            return passengerWithAllFlightsMap.get(currentPassenger);
+        }
+        // The DNI is invalid or the passenger doesn't exists in the map
+        return new ArrayList<>();
     }
 
     public Iterable<Flight> getFlightsByDestination(String destination, int year, int month, int day) {
