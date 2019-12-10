@@ -3,6 +3,7 @@ package usecase;
 import material.maps.HashTableMapDH;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -148,16 +149,35 @@ public class Flight {
 
     @Override
     public String toString() {
-        return "Flight{" +
-                "company='" + company + '\'' +
-                ", flightCode=" + flightCode +
-                ", flightDate=" + flightDate +
-                ", capacity=" + capacity +
-                ", origin='" + origin + '\'' +
-                ", destination='" + destination + '\'' +
-                ", delay=" + delay +
-                ", properties=" + properties +
-                '}';
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String s = flightDate.toLocalDate().format(formatter) + "\t"
+                + company + flightCode;
+        if (!flightDate.toLocalTime().toString().equals("00:00")) {
+            s += "\t" + flightDate.toLocalTime();
+        }
+        if (origin != null && !origin.isEmpty()) {
+            s += "\t" + origin;
+        }
+        if (destination != null && !destination.isEmpty()) {
+            s += "\t" + destination;
+        }
+        if (delay != 0) {
+            s += "\t" + "DELAYED (" + delay + "min)";
+        }
+        return s;
+    }
+
+    Flight copyFlight() {
+        Flight copiedFlight = new Flight();
+        copiedFlight.company = company;
+        copiedFlight.flightCode = flightCode;
+        copiedFlight.flightDate = flightDate;
+        copiedFlight.capacity = capacity;
+        copiedFlight.origin = origin;
+        copiedFlight.destination = destination;
+        copiedFlight.delay = delay;
+        copiedFlight.properties = properties;  // TODO?
+        return copiedFlight;
     }
 
 }

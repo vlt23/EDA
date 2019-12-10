@@ -19,15 +19,26 @@ public class FlightManager {
 
     public Flight addFlight(String company, int flightCode, int year, int month, int day) {
         Flight flight = new Flight(company, flightCode, year, month, day);
+        if (flightsMap.get(flight) != null) {
+            throw new RuntimeException("The flight already exists.");
+        }
         flightsMap.put(flight, flight);
         return flight;
     }
 
     public Flight getFlight(String company, int flightCode, int year, int month, int day) {
-        return flightsMap.get(new Flight(company, flightCode, year, month, day));
+        Flight flight = flightsMap.get(new Flight(company, flightCode, year, month, day));
+        if (flight == null) {
+            throw new RuntimeException("Flight not found.");
+        }
+        return flight.copyFlight();
     }
 
     public void updateFlight(String company, int flightCode, int year, int month, int day, Flight updatedFlightInfo) {
+        // TODO
+        /*if (flightsMap.get(updatedFlightInfo) != null) {
+            throw new RuntimeException("The new flight identifiers are already in use.");
+        }*/
         Flight currentFlight = flightsMap.get(new Flight(company, flightCode, year, month, day));
         Flight oldFlight = currentFlight;
         if (!currentFlight.equals(updatedFlightInfo)) {
