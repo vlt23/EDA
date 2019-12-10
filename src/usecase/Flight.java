@@ -2,7 +2,7 @@ package usecase;
 
 import material.maps.HashTableMapDH;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -13,7 +13,7 @@ public class Flight {
     // Flight's identification
     private String company;
     private int flightCode;
-    private Calendar flightDate;
+    private LocalDateTime flightDate;
 
     private int capacity;
 
@@ -37,16 +37,16 @@ public class Flight {
     }
 
     public void setTime(int hours, int minutes) {
-        flightDate.set(flightDate.get(Calendar.YEAR), flightDate.get(Calendar.MONTH),
-                flightDate.get(Calendar.DAY_OF_MONTH), hours, minutes);
+        flightDate = LocalDateTime.of(flightDate.getYear(), flightDate.getMonth(), flightDate.getDayOfMonth(),
+                hours, minutes);
     }
 
     public int getHours() {
-        return flightDate.get(Calendar.HOUR_OF_DAY);
+        return flightDate.getHour();
     }
 
     public int getMinutes() {
-        return flightDate.get(Calendar.MINUTE);
+        return flightDate.getMinute();
     }
 
     public String getCompany() {
@@ -66,25 +66,25 @@ public class Flight {
     }
 
     public void setDate(int year, int month, int day) {
-        flightDate = Calendar.getInstance();
-        flightDate.set(year, month, day);
+        // Default 0 hour 0 min - https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html
+        flightDate = LocalDateTime.of(year, month, day, 0, 0);
     }
 
     public int getYear() {
-        return flightDate.get(Calendar.YEAR);
+        return flightDate.getYear();
     }
 
     public int getMonth() {
-        return flightDate.get(Calendar.MONTH);
+        return flightDate.getMonth().getValue();
     }
 
     public int getDay() {
-        return flightDate.get(Calendar.DAY_OF_MONTH);
+        return flightDate.getDayOfMonth();
     }
 
     boolean compareDate(int year, int month, int day) {
-        return flightDate.get(Calendar.YEAR) == year && flightDate.get(Calendar.MONTH) == month
-                && flightDate.get(Calendar.DAY_OF_MONTH) == day;
+        return flightDate.getYear() == year && flightDate.getMonth().getValue() == month
+                && flightDate.getDayOfMonth() == day;
     }
 
     public int getCapacity() {
