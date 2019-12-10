@@ -112,8 +112,12 @@ public class FlightManager {
     }
 
     public Iterable<Passenger> getPassengers(String company, int flightCode, int year, int month, int day) {
-        Flight flight = new Flight(company, flightCode, year, month, day);
-        return flightWithAllPassengersMap.get(flight);
+        Flight flight = flightsMap.get(new Flight(company, flightCode, year, month, day));
+        if (flight == null) {
+            throw new RuntimeException("The flight doesn't exists.");
+        }
+        return flightWithAllPassengersMap.get(flight) != null
+                ? flightWithAllPassengersMap.get(flight) : new ArrayList<>();
     }
 
     public Iterable<Flight> flightsByDate(int year, int month, int day) {

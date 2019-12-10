@@ -60,11 +60,7 @@ public class Passenger {
 
     @Override
     public String toString() {
-        return "Passenger{" +
-                "DNI='" + DNI + '\'' +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                '}';
+        return DNI + " " + name + " " + surname;
     }
 
 }
