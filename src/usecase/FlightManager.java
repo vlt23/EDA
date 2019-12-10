@@ -142,10 +142,17 @@ public class FlightManager {
 
     public Iterable<Flight> getFlightsByDestination(String destination, int year, int month, int day) {
         List<Flight> flights = new ArrayList<>();
+        boolean existDest = false;
         for (Flight flight : flightsMap.values()) {
-            if (flight.getDestination().equals(destination) && flight.compareDate(year, month, day)) {
-                flights.add(flight);
+            if (flight.getDestination().equals(destination)) {
+                existDest = true;
+                if (flight.compareDate(year, month, day)) {
+                    flights.add(flight);
+                }
             }
+        }
+        if (!existDest) {
+            throw new RuntimeException("The destination doesn't exists.");
         }
         return flights;
     }
