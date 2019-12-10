@@ -11,6 +11,10 @@ public class Passenger {
     private String name;
     private String surname;
 
+    public Passenger() {
+        // default constructor
+    }
+
     Passenger(String DNI, String name, String surname) {
         this.DNI = DNI;
         this.name = name;
