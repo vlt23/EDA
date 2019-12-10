@@ -50,12 +50,12 @@ public class Passenger {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Passenger passenger = (Passenger) o;
-        return DNI.equals(passenger.DNI);
+        return DNI.equals(passenger.DNI) && name.equals(passenger.name) && surname.equals(passenger.surname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(DNI);
+        return Objects.hash(DNI, name, surname);
     }
 
     @Override

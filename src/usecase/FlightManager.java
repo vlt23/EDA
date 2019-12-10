@@ -13,7 +13,7 @@ import java.util.List;
 public class FlightManager {
 
     private Map<Flight, Flight> flightsMap = new HashTableMapDH<>();
-    private Map<Passenger, Passenger> passengersMap = new HashTableMapDH<>();
+    private Map<String, Passenger> passengersMap = new HashTableMapDH<>();
     private Map<Flight, List<Passenger>> flightWithAllPassengersMap = new HashTableMapDH<>();
     private Map<Passenger, List<Flight>> passengerWithAllFlightsMap = new HashTableMapDH<>();
 
@@ -69,19 +69,43 @@ public class FlightManager {
     }
 
     public void addPassenger(String dni, String name, String surname, Flight flight) {
+        Flight currentFlight = flightsMap.get(flight);
+        if (currentFlight == null) {
+            throw new RuntimeException("The flight doesn't exits.");
+        }
+
+        if (flightWithAllPassengersMap.get(flight) != null) {
+            if (currentFlight.getCapacity() == flightWithAllPassengersMap.get(flight).size()) {
+                throw new RuntimeException("This flight doesn't have capacity for more passengers.");
+            }
+        }
+
         Passenger passenger = new Passenger(dni, name, surname);
-        Passenger currentPassenger = passengersMap.get(passenger);
+        Passenger currentPassenger = passengersMap.get(dni);
         if (currentPassenger != null) {  // old passenger
             if (!currentPassenger.equals(passenger)) {
-                passengersMap.remove(currentPassenger);
-                passengersMap.put(passenger, passenger);
+                passengersMap.remove(dni);
+                passengersMap.put(dni, passenger);
             }
+            flightWithAllPassengersMap.get(flight).remove(currentPassenger);
         } else {  // new passenger
-            passengersMap.put(passenger, passenger);
+            passengersMap.put(dni, passenger);
         }
-        flightWithAllPassengersMap.get(flight).add(passenger);
+
+        List<Passenger> passengers = flightWithAllPassengersMap.get(flight);
+        if (passengers == null) {
+            passengers = new ArrayList<>();
+        }
+        passengers.add(passenger);
+        flightWithAllPassengersMap.remove(flight);
+        flightWithAllPassengersMap.put(flight, passengers);
+
         List<Flight> allFlights = passengerWithAllFlightsMap.get(passenger);
+        if (allFlights == null) {
+            allFlights = new ArrayList<>();
+        }
         allFlights.add(flight);
+        passengerWithAllFlightsMap.remove(passenger);
         passengerWithAllFlightsMap.put(passenger, allFlights);
     }
 
