@@ -2,6 +2,7 @@ package usecase;
 
 import material.maps.HashTableMapDH;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -35,6 +36,10 @@ public class Flight {
         this.flightCode = flightCode;
         this.setDate(year, month, day);
         properties = new HashTableMapDH<>();
+    }
+
+    LocalDate getDate() {
+        return flightDate.toLocalDate();
     }
 
     public void setTime(int hours, int minutes) {
