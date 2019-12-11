@@ -35,16 +35,21 @@ public class FlightManager {
     }
 
     public void updateFlight(String company, int flightCode, int year, int month, int day, Flight updatedFlightInfo) {
-        // TODO
-        /*if (flightsMap.get(updatedFlightInfo) != null) {
-            throw new RuntimeException("The new flight identifiers are already in use.");
-        }*/
         Flight currentFlight = flightsMap.get(new Flight(company, flightCode, year, month, day));
+        if (currentFlight == null) {
+            throw new RuntimeException("The flight doesn't exists and can't be updated.");
+        }
+
         Flight oldFlight = currentFlight;
         if (!currentFlight.equals(updatedFlightInfo)) {
+            if (flightsMap.get(updatedFlightInfo) != null) {
+                throw new RuntimeException("The new flight identifiers are already in use.");
+            }
             flightsMap.remove(currentFlight);
-            currentFlight = new Flight(company, flightCode, year, month, day);
+            currentFlight = new Flight(updatedFlightInfo.getCompany(), updatedFlightInfo.getFlightCode(),
+                    updatedFlightInfo.getYear(), updatedFlightInfo.getMonth(), updatedFlightInfo.getDay());
         }
+        currentFlight.setTime(updatedFlightInfo.getHours(), updatedFlightInfo.getMinutes());
         currentFlight.setCapacity(updatedFlightInfo.getCapacity());
         currentFlight.setOrigin(updatedFlightInfo.getOrigin());
         currentFlight.setDestination(updatedFlightInfo.getDestination());
@@ -53,6 +58,7 @@ public class FlightManager {
         for (String property : properties) {
             currentFlight.setProperty(property, updatedFlightInfo.getProperty(property));
         }
+        flightsMap.put(currentFlight, currentFlight);
 
         List<Passenger> passengers = flightWithAllPassengersMap.remove(oldFlight);
         flightWithAllPassengersMap.put(currentFlight, passengers);

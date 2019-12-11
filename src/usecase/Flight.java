@@ -139,12 +139,12 @@ public class Flight {
         Flight flight = (Flight) o;
         return flightCode == flight.flightCode &&
                 company.equals(flight.company) &&
-                flightDate.equals(flight.flightDate);
+                flightDate.toLocalDate().equals(flight.flightDate.toLocalDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(company, flightCode, flightDate);
+        return Objects.hash(company, flightCode, flightDate.toLocalDate());
     }
 
     @Override
