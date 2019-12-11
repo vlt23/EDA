@@ -2,8 +2,12 @@ package material.tree.binarysearchtree;
 
 import material.Position;
 import material.tree.binarytree.LinkedBinaryTree;
+import material.tree.iterators.InorderBinaryTreeIterator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Realization of a dictionary by means of a binary search tree.
@@ -31,8 +35,7 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
         }
 
         /**
-         * This method visits the nodes of a tree by following a breath-first
-         * search
+         * This method visits the nodes of a tree by following a breath-first search
          */
         @Override
         public Position<T> next() {
@@ -93,8 +96,7 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
 //    }
 
     /**
-     * Expand an external node into an internal node with two external node
-     * children
+     * Expand an external node into an internal node with two external node children
      */
     protected void expandLeaf(Position<E> p, E e1, E e2)
             throws RuntimeException {
@@ -148,9 +150,8 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
                 return treeSearch(value, this.binTree.left(pos)); // search left
             } // subtree
             else if (comp > 0) {
-                return treeSearch(value, this.binTree.right(pos)); // search
-            }                                                                    // right
-            // subtree
+                return treeSearch(value, this.binTree.right(pos)); // search right
+            }
         }
         return pos; // key not found; return external node
     }
@@ -187,8 +188,7 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
     }
 
     /**
-     * Returns an entry containing the given key. Returns null if no such entry
-     * exists.
+     * Returns an entry containing the given key. Returns null if no such entry exists.
      */
     @Override
     public Position<E> find(E value) {
@@ -200,8 +200,7 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
     }
 
     /**
-     * Returns an iterable collection of all the entries containing the given
-     * key.
+     * Returns an iterable collection of all the entries containing the given key.
      */
     @Override
     public Iterable<Position<E>> findAll(E value) {
@@ -265,17 +264,62 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
     }
 
     public Iterable<Position<E>> findRange(E minValue, E maxValue) throws RuntimeException {
-        throw new RuntimeException("Not yet implemented.");
+        if (comparator.compare(minValue, maxValue) > 0) {
+            throw new RuntimeException("Invalid range. (min>max)");
+        }
+        List<Position<E>> list = new ArrayList<>();
+        /*Position<E> currentValuePos = this.binTree.root();
+        while (comparator.compare(currentValuePos.getElement(), minValue) != 0
+                && this.binTree.isInternal(currentValuePos)) {
+            if (comparator.compare(minValue, currentValuePos.getElement()) < 0) {
+                currentValuePos = this.binTree.left(currentValuePos);
+            } else {
+                currentValuePos = this.binTree.right(currentValuePos);
+            }
+        }
+        if (comparator.compare(minValue, currentValuePos.getElement()) > 0) {
+            while (comparator.compare(minValue, this.binTree.parent(currentValuePos).getElement()) > 0) {
+                currentValuePos = this.binTree.parent(currentValuePos);
+            }
+        }
+
+        Iterator<Position<E>> it = new InorderBinaryTreeIterator<>(binTree, currentValuePos);
+        while (comparator.compare(currentValuePos.getElement(), maxValue) <= 0 && it.hasNext()) {
+            list.add(it.next());
+        }*/
+        return list;
     }
 
     public Position<E> first() throws RuntimeException {
-        //TODO: Practica 5 Ejercicio 2
-        throw new RuntimeException("Not yet implemented.");
+        if (this.isEmpty()) {
+            throw new RuntimeException("No first element.");
+        }
+        Position<E> pos = this.binTree.root();
+        while (this.binTree.isInternal(pos)) {
+            if (this.binTree.hasLeft(pos)) {
+                pos = this.binTree.left(pos);
+            }
+        }
+        if (pos.getElement() == null) {
+            pos = this.binTree.parent(pos);
+        }
+        return pos;
     }
 
     public Position<E> last() throws RuntimeException {
-        //TODO: Practica 5 Ejercicio 2
-        throw new RuntimeException("Not yet implemented.");
+        if (this.isEmpty()) {
+            throw new RuntimeException("No last element.");
+        }
+        Position<E> pos = this.binTree.root();
+        while (this.binTree.isInternal(pos)) {
+            if (this.binTree.hasRight(pos)) {
+                pos = this.binTree.right(pos);
+            }
+        }
+        if (pos.getElement() == null) {
+            pos = this.binTree.parent(pos);
+        }
+        return pos;
     }
 
     public Iterable<Position<E>> successors(Position<E> pos) {
@@ -321,7 +365,7 @@ class ReestructurableBinaryTree<T> extends LinkedBinaryTree<T> {
         boolean nodeLeft = (posNode == bst.binTree.left(posParent));
         boolean parentLeft = (posParent == bst.binTree.left(posGrandParent));
         BTNode<T> node = (BTNode<T>) posNode, parent = (BTNode<T>) posParent, grandParent = (BTNode<T>) posGrandParent;
-        if (nodeLeft && parentLeft) {// Desequilibrio izda-izda
+        if (nodeLeft && parentLeft) { // Desequilibrio izda-izda
             lowKey = node;
             midKey = parent;
             highKey = grandParent;
@@ -329,7 +373,7 @@ class ReestructurableBinaryTree<T> extends LinkedBinaryTree<T> {
             t2 = lowKey.getRight();
             t3 = midKey.getRight();
             t4 = highKey.getRight();
-        } else if (!nodeLeft && parentLeft) {// Desequilibrio izda-dcha
+        } else if (!nodeLeft && parentLeft) { // Desequilibrio izda-dcha
             lowKey = parent;
             midKey = node;
             highKey = grandParent;
@@ -337,7 +381,7 @@ class ReestructurableBinaryTree<T> extends LinkedBinaryTree<T> {
             t2 = midKey.getLeft();
             t3 = midKey.getRight();
             t4 = highKey.getRight();
-        } else if (nodeLeft && !parentLeft) {// Desequilibrio dcha-izda
+        } else if (nodeLeft && !parentLeft) { // Desequilibrio dcha-izda
             lowKey = grandParent;
             midKey = node;
             highKey = parent;
@@ -357,7 +401,7 @@ class ReestructurableBinaryTree<T> extends LinkedBinaryTree<T> {
 
         // put b at z's place
         if (bst.binTree.isRoot(posGrandParent)) {
-            bst.binTree = (LinkedBinaryTree<T>) bst.binTree.subTree(midKey);//FIXED: bad practice...
+            bst.binTree = (LinkedBinaryTree<T>) bst.binTree.subTree(midKey); // FIXED: bad practice...
         } else {
             BTNode<T> zParent = (BTNode<T>) bst.binTree.parent(posGrandParent);
             if (posGrandParent == bst.binTree.left(zParent)) {
