@@ -23,6 +23,9 @@ public class FlightManager {
             throw new RuntimeException("The flight already exists.");
         }
         flightsMap.put(flight, flight);
+
+        flightWithAllPassengersMap.put(flight, new ArrayList<>());
+
         return flight;
     }
 
@@ -100,13 +103,7 @@ public class FlightManager {
             passengersMap.put(dni, passenger);
         }
 
-        List<Passenger> passengers = flightWithAllPassengersMap.get(flight);
-        if (passengers == null) {
-            passengers = new ArrayList<>();
-        }
-        passengers.add(passenger);
-        flightWithAllPassengersMap.remove(flight);
-        flightWithAllPassengersMap.put(flight, passengers);
+        flightWithAllPassengersMap.get(flight).add(passenger);
 
         List<Flight> allFlights = passengerWithAllFlightsMap.get(passenger);
         if (allFlights == null) {
