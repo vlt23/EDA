@@ -26,7 +26,7 @@ public class FlightManager {
 
         flightWithAllPassengersMap.put(flight, new ArrayList<>());
 
-        return flight;
+        return flight.copyFlight();
     }
 
     public Flight getFlight(String company, int flightCode, int year, int month, int day) {
@@ -43,7 +43,7 @@ public class FlightManager {
             throw new RuntimeException("The flight doesn't exists and can't be updated.");
         }
 
-        Flight oldFlight = currentFlight;
+        Flight oldFlight = currentFlight.copyFlight();
         if (!currentFlight.equals(updatedFlightInfo)) {
             if (flightsMap.get(updatedFlightInfo) != null) {
                 throw new RuntimeException("The new flight identifiers are already in use.");
@@ -99,19 +99,16 @@ public class FlightManager {
             if (flightWithAllPassengersMap.get(flight) != null) {
                 flightWithAllPassengersMap.get(flight).remove(currentPassenger);
             }
+            List<Flight> flights = passengerWithAllFlightsMap.remove(currentPassenger);
+            passengerWithAllFlightsMap.put(passenger, flights);
         } else {  // new passenger
             passengersMap.put(dni, passenger);
+            passengerWithAllFlightsMap.put(passenger, new ArrayList<>());
         }
 
         flightWithAllPassengersMap.get(flight).add(passenger);
 
-        List<Flight> allFlights = passengerWithAllFlightsMap.get(passenger);
-        if (allFlights == null) {
-            allFlights = new ArrayList<>();
-        }
-        allFlights.add(flight);
-        passengerWithAllFlightsMap.remove(passenger);
-        passengerWithAllFlightsMap.put(passenger, allFlights);
+        passengerWithAllFlightsMap.get(passenger).add(flight);
     }
 
     public Iterable<Passenger> getPassengers(String company, int flightCode, int year, int month, int day) {
@@ -128,7 +125,7 @@ public class FlightManager {
         List<Flight> toReturnFlights = new ArrayList<>();
         for (Flight flight : flights) {
             if (flight.compareDate(year, month, day)) {
-                toReturnFlights.add(flight);
+                toReturnFlights.add(flight.copyFlight());
             }
         }
         return toReturnFlights;
@@ -137,7 +134,11 @@ public class FlightManager {
     public Iterable<Flight> getFlightsByPassenger(Passenger passenger) {
         Passenger currentPassenger = passengersMap.get(passenger.getDNI());
         if (currentPassenger != null) {
-            return passengerWithAllFlightsMap.get(currentPassenger);
+            List<Flight> flights = new ArrayList<>(passengerWithAllFlightsMap.get(currentPassenger).size());
+            for (Flight flight : passengerWithAllFlightsMap.get(currentPassenger)) {
+                flights.add(flight.copyFlight());
+            }
+            return flights;
         }
         // The DNI is invalid or the passenger doesn't exists in the map
         return new ArrayList<>();
@@ -150,7 +151,7 @@ public class FlightManager {
             if (flight.getDestination().equals(destination)) {
                 existDest = true;
                 if (flight.compareDate(year, month, day)) {
-                    flights.add(flight);
+                    flights.add(flight.copyFlight());
                 }
             }
         }
