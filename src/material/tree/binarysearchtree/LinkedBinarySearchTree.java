@@ -268,26 +268,53 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
             throw new RuntimeException("Invalid range. (min>max)");
         }
         List<Position<E>> list = new ArrayList<>();
-        /*Position<E> currentValuePos = this.binTree.root();
-        while (comparator.compare(currentValuePos.getElement(), minValue) != 0
-                && this.binTree.isInternal(currentValuePos)) {
-            if (comparator.compare(minValue, currentValuePos.getElement()) < 0) {
-                currentValuePos = this.binTree.left(currentValuePos);
-            } else {
-                currentValuePos = this.binTree.right(currentValuePos);
-            }
+        Position<E> currentValuePos = findProximPos(minValue);
+        if (comparator.compare(currentValuePos.getElement(), minValue) > 0
+                || comparator.compare(currentValuePos.getElement(), maxValue) > 0) {
+            return list;
         }
-        if (comparator.compare(minValue, currentValuePos.getElement()) > 0) {
-            while (comparator.compare(minValue, this.binTree.parent(currentValuePos).getElement()) > 0) {
-                currentValuePos = this.binTree.parent(currentValuePos);
-            }
-        }
-
         Iterator<Position<E>> it = new InorderBinaryTreeIterator<>(binTree, currentValuePos);
         while (comparator.compare(currentValuePos.getElement(), maxValue) <= 0 && it.hasNext()) {
             list.add(it.next());
-        }*/
+        }
         return list;
+    }
+
+    private Position<E> findProximPos(E value) {
+        Position<E> currentValuePos = this.binTree.root();
+        while (comparator.compare(currentValuePos.getElement(), value) != 0
+                && this.binTree.isInternal(currentValuePos)) {
+            /*if (currentValuePos.getElement() == null) {
+                currentValuePos = this.binTree.parent(currentValuePos);
+            } else */if (comparator.compare(value, currentValuePos.getElement()) < 0) {
+                if (this.binTree.hasLeft(currentValuePos)
+                        && this.binTree.left(currentValuePos).getElement() != null) {
+                    currentValuePos = this.binTree.left(currentValuePos);
+                } else {
+                    break;
+                }
+            } else {
+                if (this.binTree.hasRight(currentValuePos)
+                        && this.binTree.right(currentValuePos).getElement() != null) {
+                    currentValuePos = this.binTree.right(currentValuePos);
+                } else {
+                    break;
+                }
+            }
+        }
+        /*if (currentValuePos.getElement() == null) {
+            currentValuePos = this.binTree.parent(currentValuePos);
+        }*/
+        if (comparator.compare(value, currentValuePos.getElement()) > 0
+                && !this.binTree.isRoot(currentValuePos)) {
+            while (comparator.compare(value, this.binTree.parent(currentValuePos).getElement()) > 0) {
+                currentValuePos = this.binTree.parent(currentValuePos);
+                if (this.binTree.isRoot(currentValuePos)) {
+                    break;
+                }
+            }
+        }
+        return currentValuePos;
     }
 
     public Position<E> first() throws RuntimeException {
