@@ -31,7 +31,6 @@ public class ArrayQueue<E> implements Queue<E> {
         maxCapacity = capacity;
     }
 
-
     @Override
     public int size() {
         return this.size;
@@ -66,10 +65,8 @@ public class ArrayQueue<E> implements Queue<E> {
         if (this.isEmpty()) {
             this.head = 0;
             this.tail = 0;
-            this.elements[this.tail] = element;
-        } else {
-            this.elements[this.tail] = element;
         }
+        this.elements[this.tail] = element;
         this.tail = (this.tail + 1) % this.maxCapacity;
         this.size++;
     }

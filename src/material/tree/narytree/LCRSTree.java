@@ -11,7 +11,7 @@ import java.util.List;
  * A linked class for a tree where nodes have an arbitrary number of children.
  *
  * @param <E> the elements stored in the tree
- * @author Raul Cabido, Abraham Duarte, Jose Velez, Jesús Sánchez-Oro
+ * @author Raul Cabido, Abraham Duarte, Jose Velez, Jesús Sánchez-Oro, vlt23
  */
 public class LCRSTree<E> implements NAryTree<E> {
 
@@ -337,8 +337,7 @@ public class LCRSTree<E> implements NAryTree<E> {
      * @return the position casted to TreeNode
      * @throws IllegalStateException if the position is not valid
      */
-    private TreeNode<E> checkPosition(Position<E> p)
-            throws IllegalStateException {
+    private TreeNode<E> checkPosition(Position<E> p) throws IllegalStateException {
         if (!(p instanceof TreeNode)) {
             throw new IllegalStateException("The position is invalid");
         }
