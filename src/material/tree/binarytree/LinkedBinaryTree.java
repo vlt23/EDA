@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class LinkedBinaryTree<E> implements BinaryTree<E> {
 
-    protected class BTNode<T> implements Position<T> {
+    protected static class BTNode<T> implements Position<T> {
 
         private T element;
         private BTNode<T> left, right, parent;
@@ -441,7 +441,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
      * If v is a good binary tree node, cast to BTPosition, else throw exception
      */
     private BTNode<E> checkPosition(Position<E> p) {
-        if (p == null || !(p instanceof BTNode)) {
+        if (!(p instanceof BTNode)) {
             throw new RuntimeException("The position is invalid");
         }
         return (BTNode<E>) p;
