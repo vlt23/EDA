@@ -175,29 +175,42 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     }
 
     /**
-     * Test not passing. Porque he creado otro position en vez de reutilizar?
      * @param v new root node
-     * @return
+     * @return subtree
      */
     @Override
     public BinaryTree<E> subTree(Position<E> v) {
-        BinaryTree<E> newSubTree = new ArrayBinaryTree<>();
+        ArrayBinaryTree<E> newSubTree = new ArrayBinaryTree<>();
         BTPos<E> newRoot = checkPosition(v);
-        Position<E> newRootPos = newSubTree.addRoot(newRoot.getElement());
-        subTreeing(newSubTree, v, newRootPos);
+        int oldPos = newRoot.position;
+        newRoot.position = 1;
+        newSubTree.elements[1] = newRoot;
+        newSubTree.size = 1;
+        this.elements[oldPos] = null;
+        this.size--;
+        subTreeing(newSubTree, this.elements[1], oldPos);
         return newSubTree;
     }
 
-    private void subTreeing(BinaryTree<E> newSubTree, Position<E> btPosOrig, Position<E> btPosDest) {
-        if (this.hasLeft(btPosOrig)) {
-            Position<E> leftChildOrig = this.left(btPosOrig);
-            Position<E> leftChildDest = newSubTree.insertLeft(btPosDest, leftChildOrig.getElement());
-            subTreeing(newSubTree, leftChildOrig, leftChildDest);
+    private void subTreeing(ArrayBinaryTree<E> newSubTree, BTPos<E> currentBTPos, int oldPos) {
+        if (this.elements[oldPos * 2] != null) {
+            BTPos<E> leftChild = this.elements[oldPos * 2];
+            this.elements[oldPos * 2] = null;
+            newSubTree.elements[currentBTPos.position * 2] = leftChild;
+            leftChild.position = currentBTPos.position * 2;
+            newSubTree.size++;
+            this.size--;
+            subTreeing(newSubTree, leftChild, oldPos * 2);
         }
-        if (this.hasRight(btPosOrig)) {
-            Position<E> rightChildOrig = this.right(btPosOrig);
-            Position<E> rightChildDest = newSubTree.insertRight(btPosDest, rightChildOrig.getElement());
-            subTreeing(newSubTree, rightChildOrig, rightChildDest);
+
+        if (this.elements[oldPos * 2 + 1] != null) {
+            BTPos<E> rightChild = this.elements[oldPos * 2 + 1];
+            this.elements[oldPos * 2 + 1] = null;
+            newSubTree.elements[currentBTPos.position * 2 + 1] = rightChild;
+            rightChild.position = currentBTPos.position * 2 + 1;
+            newSubTree.size++;
+            this.size--;
+            subTreeing(newSubTree, rightChild, oldPos * 2 + 1);
         }
     }
 
