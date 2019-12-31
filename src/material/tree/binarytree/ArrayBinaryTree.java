@@ -29,13 +29,22 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @SuppressWarnings("unchecked")
     public ArrayBinaryTree() {
-        elements = new BTPos[1024];
+        elements = new BTPos[16];
+        size = 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    public ArrayBinaryTree(int initialCapacity) {
+        elements = new BTPos[initialCapacity];
         size = 0;
     }
 
     @Override
     public Position<E> left(Position<E> v) throws RuntimeException {
         BTPos<E> btPos = checkPosition(v);
+        if (checkSize(btPos.position)) {
+            throw new RuntimeException("No left child");
+        }
         BTPos<E> left = elements[btPos.position * 2];
         if (left == null) {
             throw new RuntimeException("No left child");
@@ -46,6 +55,9 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     @Override
     public Position<E> right(Position<E> v) throws RuntimeException {
         BTPos<E> btPos = checkPosition(v);
+        if (checkSize(btPos.position)) {
+            throw new RuntimeException("No right child");
+        }
         BTPos<E> right = elements[btPos.position * 2 + 1];
         if (right == null) {
             throw new RuntimeException("No right child");
@@ -56,12 +68,18 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     @Override
     public boolean hasLeft(Position<E> v) {
         BTPos<E> parent = checkPosition(v);
+        if (checkSize(parent.position)) {
+            return false;
+        }
         return elements[parent.position * 2] != null;
     }
 
     @Override
     public boolean hasRight(Position<E> v) {
         BTPos<E> parent = checkPosition(v);
+        if (checkSize(parent.position)) {
+            return false;
+        }
         return elements[parent.position * 2 + 1] != null;
     }
 
@@ -180,7 +198,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
      */
     @Override
     public BinaryTree<E> subTree(Position<E> v) {
-        ArrayBinaryTree<E> newSubTree = new ArrayBinaryTree<>();
+        ArrayBinaryTree<E> newSubTree = new ArrayBinaryTree<>(this.elements.length);
         BTPos<E> newRoot = checkPosition(v);
         int oldPos = newRoot.position;
         newRoot.position = 1;
@@ -193,6 +211,9 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     }
 
     private void subTreeing(ArrayBinaryTree<E> newSubTree, BTPos<E> currentBTPos, int oldPos) {
+        if (checkSize(oldPos)) {
+            return;
+        }
         if (this.elements[oldPos * 2] != null) {
             BTPos<E> leftChild = this.elements[oldPos * 2];
             this.elements[oldPos * 2] = null;
@@ -226,6 +247,9 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
         if (tree != null && !tree.isEmpty()) {
             BTPos<E> r = checkPosition(tree.root());
+            if (checkSize(originBTPos.position)) {
+                this.resize();
+            }
             this.elements[originBTPos.position * 2] = r;
             this.size++;
             attachingBTPos(originBTPos.position * 2, tree, r);
@@ -237,11 +261,17 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     private void attachingBTPos(int originPos, BinaryTree<E> otherTree, BTPos<E> otherPos) {
         if (otherTree.hasLeft(otherPos)) {
+            if (checkSize(originPos)) {
+                this.resize();
+            }
             this.elements[originPos * 2] = checkPosition(otherTree.left(otherPos));
             this.size++;
             attachingBTPos(originPos * 2, otherTree, checkPosition(otherTree.left(otherPos)));
         }
         if (otherTree.hasRight(otherPos)) {
+            if (checkSize(originPos)) {
+                this.resize();
+            }
             this.elements[originPos * 2 + 1] = checkPosition(otherTree.right(otherPos));
             this.size++;
             attachingBTPos(originPos * 2 + 1, otherTree, checkPosition(otherTree.right(otherPos)));
@@ -249,6 +279,9 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     }
 
     private void attachingEPosition(int pos) {
+        if (checkSize(pos)) {
+            return;
+        }
         if (this.elements[pos * 2] != null) {
             this.elements[pos * 2].position = pos * 2;
             attachingEPosition(pos * 2);
@@ -271,6 +304,9 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
         if (tree != null && !tree.isEmpty()) {
             BTPos<E> r = checkPosition(tree.root());
+            if (checkSize(originBTPos.position)) {
+                this.resize();
+            }
             this.elements[originBTPos.position * 2 + 1] = r;
             this.size++;
             attachingBTPos(originBTPos.position * 2 + 1, tree, r);
@@ -370,6 +406,20 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
             throw new RuntimeException("The position is invalid");
         }
         return (BTPos<E>) p;
+    }
+
+    private boolean checkSize(int pos) {
+        return pos * 2 >= this.elements.length;
+    }
+
+    /**
+     * Duplicate the size
+     */
+    @SuppressWarnings("unchecked")
+    private void resize() {
+        BTPos<E>[] newElements = new BTPos[this.elements.length * 2];
+        System.arraycopy(this.elements, 0, newElements, 0, this.elements.length);
+        this.elements = newElements;
     }
 
 }
