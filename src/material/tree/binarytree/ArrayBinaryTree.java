@@ -216,7 +216,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public void attachLeft(Position<E> p, BinaryTree<E> tree) throws RuntimeException {
-        BTPos<E> btPos = checkPosition(p);
+        BTPos<E> originBTPos = checkPosition(p);
         if (tree == this) {
             throw new RuntimeException("Cannot attach a tree over himself");
         }
@@ -226,14 +226,42 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
         if (tree != null && !tree.isEmpty()) {
             BTPos<E> r = checkPosition(tree.root());
-            elements[btPos.position * 2] = r;
-            // TODO
+            this.elements[originBTPos.position * 2] = r;
+            this.size++;
+            attachingBTPos(originBTPos.position * 2, tree, r);
+            this.elements[originBTPos.position * 2].position = originBTPos.position * 2;
+            attachingEPosition(this.elements[originBTPos.position * 2].position);
+            //tree.remove(r);
+        }
+    }
+
+    private void attachingBTPos(int originPos, BinaryTree<E> otherTree, BTPos<E> otherPos) {
+        if (otherTree.hasLeft(otherPos)) {
+            this.elements[originPos * 2] = checkPosition(otherTree.left(otherPos));
+            this.size++;
+            attachingBTPos(originPos * 2, otherTree, checkPosition(otherTree.left(otherPos)));
+        }
+        if (otherTree.hasRight(otherPos)) {
+            this.elements[originPos * 2 + 1] = checkPosition(otherTree.right(otherPos));
+            this.size++;
+            attachingBTPos(originPos * 2 + 1, otherTree, checkPosition(otherTree.right(otherPos)));
+        }
+    }
+
+    private void attachingEPosition(int pos) {
+        if (this.elements[pos * 2] != null) {
+            this.elements[pos * 2].position = pos * 2;
+            attachingEPosition(pos * 2);
+        }
+        if (this.elements[pos * 2 + 1] != null) {
+            this.elements[pos * 2 + 1].position = pos * 2 + 1;
+            attachingEPosition(pos * 2 + 1);
         }
     }
 
     @Override
     public void attachRight(Position<E> p, BinaryTree<E> tree) throws RuntimeException {
-        BTPos<E> btPos = checkPosition(p);
+        BTPos<E> originBTPos = checkPosition(p);
         if (tree == this) {
             throw new RuntimeException("Cannot attach a tree over himself");
         }
@@ -243,8 +271,12 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
         if (tree != null && !tree.isEmpty()) {
             BTPos<E> r = checkPosition(tree.root());
-            elements[btPos.position * 2 + 1] = r;
-            // TODO
+            this.elements[originBTPos.position * 2 + 1] = r;
+            this.size++;
+            attachingBTPos(originBTPos.position * 2 + 1, tree, r);
+            this.elements[originBTPos.position * 2 + 1].position = originBTPos.position * 2 + 1;
+            attachingEPosition(this.elements[originBTPos.position * 2 + 1].position);
+            //tree.remove(r);
         }
     }
 
