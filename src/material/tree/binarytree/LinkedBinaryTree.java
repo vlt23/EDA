@@ -111,7 +111,6 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
     }
 
     private BTNode<E> root;
-    private int size;
 
     /**
      * Creates an empty binary tree.
@@ -122,6 +121,10 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public int size() {
+        int size = 0;
+        for (Position<E> p : this) {
+            size++;
+        }
         return size;
     }
 
@@ -247,7 +250,6 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
             throw new RuntimeException("Tree already has a root");
         }
         root = new BTNode<>(e, null, null, null);
-        size = 1;
         return root;
     }
 
@@ -260,7 +262,6 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
         }
         BTNode<E> newNode = new BTNode<>(e, node, null, null);
         node.setLeft(newNode);
-        size++;
         return newNode;
     }
 
@@ -273,7 +274,6 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
         }
         BTNode<E> newNode = new BTNode<>(e, node, null, null);
         node.setRight(newNode);
-        size++;
         return newNode;
     }
 
@@ -304,7 +304,6 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
                 child.setParent(parent);
             }
         }
-        size--;
         return p.getElement();
     }
 
