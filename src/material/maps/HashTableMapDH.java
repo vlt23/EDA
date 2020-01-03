@@ -3,6 +3,7 @@ package material.maps;
 /**
  * @param <K> The key
  * @param <V> The stored value
+ * @author vlt23
  */
 public class HashTableMapDH<K, V> extends AbstractHashTableMap<K, V> {
 
@@ -32,4 +33,5 @@ public class HashTableMapDH<K, V> extends AbstractHashTableMap<K, V> {
         }
         return somePrimes[i];
     }
+
 }

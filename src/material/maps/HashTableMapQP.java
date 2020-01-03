@@ -1,8 +1,10 @@
 package material.maps;
+
 /**
  * @param <K> The key
  * @param <V> The stored value
-     */
+ * @author vlt23
+ */
 public class HashTableMapQP<K, V> extends AbstractHashTableMap<K, V> {
 
     public HashTableMapQP(int size) {
@@ -14,7 +16,7 @@ public class HashTableMapQP<K, V> extends AbstractHashTableMap<K, V> {
     }
 
     public HashTableMapQP(int p, int cap) {
-        super(p,cap);
+        super(p, cap);
     }
 
     @Override

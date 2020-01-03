@@ -3,6 +3,7 @@ package material.maps;
 /**
  * @param <K> The key
  * @param <V> The stored value
+ * @author vlt23
  */
 public class HashTableMapLP<K, V> extends AbstractHashTableMap<K, V> {
 
@@ -17,7 +18,6 @@ public class HashTableMapLP<K, V> extends AbstractHashTableMap<K, V> {
         super();
     }
 
-    //protected AbstractHashTableMap(int p, int cap)
     public HashTableMapLP(int p, int cap) {
         super(p, cap);
     }

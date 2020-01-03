@@ -3,7 +3,6 @@ package material.maps;
 import java.util.Iterator;
 import java.util.Random;
 
-
 /**
  * <p>This class provides a skeletal implementation of the Map interface. A hash table data
  * structure that uses open addressing to handle collisions. To implement a map the programmer
@@ -17,7 +16,7 @@ import java.util.Random;
  *
  * @param <K> Key type
  * @param <V> Value type
- * @author R. Cabido, A. Duarte, and J. Velez
+ * @author R. Cabido, A. Duarte, J. Velez, and vlt23
  */
 abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
 
@@ -25,7 +24,7 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
      * @param <T> Key type
      * @param <U> Value type
      */
-    private class HashEntry<T, U> implements Entry<T, U> {
+    private static class HashEntry<T, U> implements Entry<T, U> {
 
         protected T key;
         protected U value;
@@ -52,20 +51,18 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public boolean equals(Object o) {
-
             if (o.getClass() != this.getClass()) {
                 return false;
             }
-
             HashEntry<T, U> ent;
             try {
                 ent = (HashEntry<T, U>) o;
             } catch (ClassCastException ex) {
                 return false;
             }
-            return (ent.getKey().equals(this.key))
-                    && (ent.getValue().equals(this.value));
+            return ent.getKey().equals(this.key) && ent.getValue().equals(this.value);
         }
 
         /**
@@ -80,7 +77,7 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
     /**
      * @author Juan David Quintana Perez, Daniel Arroyo Cortes
      */
-    private class HashTableMapIterator<T, U> implements Iterator<Entry<T, U>> {
+    private static class HashTableMapIterator<T, U> implements Iterator<Entry<T, U>> {
 
         private int pos;
         private HashEntry<T, U>[] bucket;
@@ -99,7 +96,8 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
 
         private void goToNextElement(int start) {
             this.pos = start;
-            while ((this.pos < bucket.length) && ((this.bucket[this.pos] == null) || (this.bucket[this.pos] == this.AVAILABLE))) {
+            while ((this.pos < bucket.length) &&
+                    ((this.bucket[this.pos] == null) || (this.bucket[this.pos] == this.AVAILABLE))) {
                 this.pos++;
             }
         }
@@ -126,7 +124,7 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
         }
     }
 
-    private class HashTableMapKeyIterator<T, U> implements Iterator<T> {
+    private static class HashTableMapKeyIterator<T, U> implements Iterator<T> {
 
         public HashTableMapIterator<T, U> it;
 
@@ -150,7 +148,7 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
         }
     }
 
-    private class HashTableMapValueIterator<T, U> implements Iterator<U> {
+    private static class HashTableMapValueIterator<T, U> implements Iterator<U> {
 
         public HashTableMapIterator<T, U> it;
 
@@ -174,7 +172,7 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
         }
     }
 
-    protected class HashEntryIndex {
+    protected static class HashEntryIndex {
 
         int index;
         boolean found;
@@ -184,7 +182,7 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
             this.found = f;
         }
 
-        //Easy visualization
+        // Easy visualization
         @Override
         public String toString() {
             return "(" + this.index + ", " + this.found + ")";
@@ -194,7 +192,7 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
     protected int n; // number of entries in the dictionary
     protected int prime, capacity; // prime factor and capacity of bucket array
     protected long scale, shift; // the shift and scaling factors
-    protected HashEntry<K, V>[] bucket;// bucket array
+    protected HashEntry<K, V>[] bucket; // bucket array
     protected final Entry<K, V> AVAILABLE = new HashEntry<>(null, null);
 
     /**
@@ -219,6 +217,7 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
      * @param p   prime number
      * @param cap initial capacity
      */
+    @SuppressWarnings("unchecked")
     protected AbstractHashTableMap(int p, int cap) {
         this.n = 0;
         this.prime = p;
@@ -236,7 +235,7 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean isEmpty() {
-        return (n == 0);
+        return n == 0;
     }
 
     /**
@@ -295,7 +294,6 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
         return bucket[i.index].getValue(); // return the found value in this case
     }
 
-
     @Override
     public V put(K key, V value) throws IllegalStateException {
         HashEntryIndex i = findEntry(key); // find the appropriate spot for this entry
@@ -331,29 +329,17 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
 
     @Override
     public Iterable<K> keys() {
-        return new Iterable<K>() {
-            public Iterator<K> iterator() {
-                return new HashTableMapKeyIterator<K, V>(new HashTableMapIterator<>(bucket, AVAILABLE, n));
-            }
-        };
+        return () -> new HashTableMapKeyIterator<>(new HashTableMapIterator<>(bucket, AVAILABLE, n));
     }
 
     @Override
     public Iterable<V> values() {
-        return new Iterable<V>() {
-            public Iterator<V> iterator() {
-                return new HashTableMapValueIterator<K, V>(new HashTableMapIterator<>(bucket, AVAILABLE, n));
-            }
-        };
+        return () -> new HashTableMapValueIterator<>(new HashTableMapIterator<>(bucket, AVAILABLE, n));
     }
 
     @Override
     public Iterable<Entry<K, V>> entries() {
-        return new Iterable<Entry<K, V>>() {
-            public Iterator<Entry<K, V>> iterator() {
-                return new HashTableMapIterator<>(bucket, AVAILABLE, n);
-            }
-        };
+        return () -> new HashTableMapIterator<>(bucket, AVAILABLE, n);
     }
 
     /**
@@ -382,33 +368,20 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
      * Doubles the size of the hash table and rehashes all the entries.
      */
     protected void rehash() {
-        capacity = 2 * capacity;
-        HashEntry<K, V>[] old = bucket;
         // new bucket is twice as big
-        bucket = (HashEntry<K, V>[]) new HashEntry[capacity];
-        Random rand = new Random();
-        // new hash scaling factor
-        scale = rand.nextInt(prime - 1) + 1;
-        // new hash shifting factor
-        shift = rand.nextInt(prime);
-        for (HashEntry<K, V> e : old) {
-            if ((e != null) && (e != AVAILABLE)) { // a valid entry
-                int j = findEntry(e.getKey()).index;
-                bucket[j] = e;
-            }
-        }
+        rehash(capacity * 2);
     }
 
     /**
      * Changes the size of the hash table and rehashes all the entries.
      */
-    protected void rehash(int newcap) {
-        //Prevent rehashing when decreasing the capacity
+    protected void rehash(int newCapacity) {
+        // Prevent rehashing when decreasing the capacity
         // and the load factor constrain is not met
-        if (newcap < 2 * this.size())
+        if (newCapacity < 2 * this.size())
             return;
 
-        capacity = newcap;
+        capacity = newCapacity;
         HashEntry<K, V>[] old = bucket;
         bucket = (HashEntry<K, V>[]) new HashEntry[capacity];
         Random rand = new Random();
