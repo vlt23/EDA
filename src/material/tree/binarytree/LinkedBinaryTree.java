@@ -111,6 +111,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
     }
 
     private BTNode<E> root;
+    private int size;
 
     /**
      * Creates an empty binary tree.
@@ -121,10 +122,6 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public int size() {
-        int size = 0;
-        for (Position<E> p : this) {
-            size++;
-        }
         return size;
     }
 
@@ -250,6 +247,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
             throw new RuntimeException("Tree already has a root");
         }
         root = new BTNode<>(e, null, null, null);
+        size = 1;
         return root;
     }
 
@@ -262,6 +260,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
         }
         BTNode<E> newNode = new BTNode<>(e, node, null, null);
         node.setLeft(newNode);
+        size++;
         return newNode;
     }
 
@@ -274,6 +273,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
         }
         BTNode<E> newNode = new BTNode<>(e, node, null, null);
         node.setRight(newNode);
+        size++;
         return newNode;
     }
 
@@ -304,6 +304,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
                 child.setParent(parent);
             }
         }
+        size--;
         return p.getElement();
     }
 
@@ -373,6 +374,12 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 
         LinkedBinaryTree<E> tree = new LinkedBinaryTree<>();
         tree.root = newRoot;
+        for (Position<E> ignored : tree) {
+            tree.size++;
+        }
+
+        this.size -= tree.size;
+
         return tree;
     }
 
@@ -391,10 +398,12 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
             BTNode<E> r = checkPosition(tree.root());
             node.setLeft(r);
             r.setParent(node);
+            this.size += tree.size();
 
             // The source tree will be left empty
             LinkedBinaryTree<E> lbt = (LinkedBinaryTree<E>) tree; // safe cast, checkPosition would fail first
             lbt.root = null;
+            lbt.size = 0;
         }
     }
 
@@ -413,10 +422,12 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
             BTNode<E> r = checkPosition(tree.root());
             node.setRight(r);
             r.setParent(node);
+            this.size += tree.size();
 
             // The source tree will be left empty
             LinkedBinaryTree<E> lbt = (LinkedBinaryTree<E>) tree; // safe cast, checkPosition would fail first
             lbt.root = null;
+            lbt.size = 0;
         }
     }
 
