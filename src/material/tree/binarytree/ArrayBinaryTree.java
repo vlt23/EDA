@@ -145,8 +145,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
             child.position = child.position / 2;
             elements[btPos.position] = child;
             reOrder(btPos.position * 2, btPos.position);
-        // If p is leaf, doesn't need re-order his children (no child)
-        } else {
+        } else {  // If p is leaf, doesn't need re-order his children (no child)
             elements[btPos.position] = null;
         }
 
@@ -255,7 +254,10 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
             attachingBTPos(originBTPos.position * 2, tree, r);
             this.elements[originBTPos.position * 2].position = originBTPos.position * 2;
             attachingEPosition(this.elements[originBTPos.position * 2].position);
-            //tree.remove(r);
+
+            ArrayBinaryTree<E> abt = (ArrayBinaryTree<E>) tree;
+            abt.elements = new BTPos[16];
+            abt.size = 0;
         }
     }
 
@@ -312,7 +314,10 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
             attachingBTPos(originBTPos.position * 2 + 1, tree, r);
             this.elements[originBTPos.position * 2 + 1].position = originBTPos.position * 2 + 1;
             attachingEPosition(this.elements[originBTPos.position * 2 + 1].position);
-            //tree.remove(r);
+
+            ArrayBinaryTree<E> abt = (ArrayBinaryTree<E>) tree;
+            abt.elements = new BTPos[16];
+            abt.size = 0;
         }
     }
 
