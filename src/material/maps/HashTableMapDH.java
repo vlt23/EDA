@@ -31,6 +31,9 @@ public class HashTableMapDH<K, V> extends AbstractHashTableMap<K, V> {
         while (super.capacity < somePrimes[i]) {
             i++;
         }
+        if (i < somePrimes.length - 3) {
+            i += 3;
+        }
         return somePrimes[i];
     }
 

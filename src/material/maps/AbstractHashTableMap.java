@@ -324,7 +324,6 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
     @Override
     public Iterator<Entry<K, V>> iterator() {
         return new HashTableMapIterator<>(this.bucket, this.AVAILABLE, this.n);
-
     }
 
     @Override
@@ -378,8 +377,9 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
     protected void rehash(int newCapacity) {
         // Prevent rehashing when decreasing the capacity
         // and the load factor constrain is not met
-        if (newCapacity < 2 * this.size())
+        if (newCapacity < 2 * this.size()) {
             return;
+        }
 
         capacity = newCapacity;
         HashEntry<K, V>[] old = bucket;
