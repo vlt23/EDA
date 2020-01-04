@@ -262,8 +262,8 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
     protected HashEntryIndex findEntry(K key) throws IllegalStateException {
         int avail = -1;
         checkKey(key);
-        int hashcode = hashValue(key);
-        int index = hashcode;
+        int hashValue = hashValue(key);
+        int index = hashValue;
         int retry = 0;
         do {
             Entry<K, V> e = bucket[index];
@@ -280,7 +280,7 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
                 }
             }
             retry++;
-            index = (hashcode + offset(key, retry)) % capacity; // keep looking
+            index = (hashValue + offset(key, retry)) % capacity; // keep looking
         } while (retry < this.capacity);
         return new HashEntryIndex(avail, false); // first empty or available slot
     }
