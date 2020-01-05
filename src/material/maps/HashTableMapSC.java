@@ -40,6 +40,7 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public boolean equals(Object o) {
             if (o.getClass() != this.getClass()) {
                 return false;
@@ -50,7 +51,7 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
             } catch (ClassCastException ex) {
                 return false;
             }
-            return (ent.getKey().equals(this.key)) && (ent.getValue().equals(this.value));
+            return ent.getKey().equals(this.key) && ent.getValue().equals(this.value);
         }
     }
 
@@ -179,6 +180,7 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
      * @param p   prime number
      * @param cap initial capacity
      */
+    @SuppressWarnings("unchecked")
     public HashTableMapSC(int p, int cap) {
         this.prime = p;
         this.capacity = cap;
@@ -226,15 +228,15 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
         int index = hashValue(key);
         int pos = findKey(index, key);
         if (pos != -1) {
-            // setValue return the old value
+            // setValue method already returns the old value
             return bucket[index].get(pos).setValue(value);
         }
         if (n >= capacity / 2) {
             rehash(capacity * 2);
             index = hashValue(key);
-            if (bucket[index] == null) {
-                bucket[index] = new ArrayList<>();
-            }
+        }
+        if (bucket[index] == null) {
+            bucket[index] = new ArrayList<>();
         }
         bucket[index].add(new HashEntry<>(key, value));
         n++;
@@ -247,17 +249,15 @@ public class HashTableMapSC<K, V> implements Map<K, V> {
         int index = hashValue(key);
         int pos = findKey(index, key);
         if (pos != -1) {
-            V valueToReturn = bucket[index].get(pos).getValue();
-            bucket[index].remove(pos);
             n--;
-            return valueToReturn;
+            return bucket[index].remove(pos).getValue();
         }
         return null;
     }
 
     private int findKey(int index, K key) {
         if (bucket[index] == null) {
-            bucket[index] = new ArrayList<>();
+            return -1;
         }
         for (int i = 0; i < bucket[index].size(); i++) {
             if (bucket[index].get(i).getKey().equals(key)) {
