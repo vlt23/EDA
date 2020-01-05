@@ -98,8 +98,7 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
     /**
      * Expand an external node into an internal node with two external node children
      */
-    protected void expandLeaf(Position<E> p, E e1, E e2)
-            throws RuntimeException {
+    protected void expandLeaf(Position<E> p, E e1, E e2) throws RuntimeException {
         if (!this.binTree.isLeaf(p)) {
             throw new RuntimeException("Node is not external");
         }
@@ -111,9 +110,7 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
     /**
      * Remove an external node v and replace its parent with v's sibling
      */
-    protected void removeAboveLeaf(Position<E> p)
-            throws RuntimeException {
-
+    protected void removeAboveLeaf(Position<E> p) throws RuntimeException {
         Position<E> u = this.binTree.parent(p);
         this.binTree.remove(p);
         this.binTree.remove(u);
@@ -140,34 +137,32 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
     /**
      * Auxiliary method used by find, insert, and remove.
      */
-    protected Position<E> treeSearch(E value, Position<E> pos)
-            throws RuntimeException {
-        // return internal node where key is found
-        if (!this.binTree.isLeaf(pos)) {
-            E curValue = pos.getElement();
-            int comp = comparator.compare(value, curValue);
-            if (comp < 0) {
-                return treeSearch(value, this.binTree.left(pos)); // search left
-            } // subtree
-            else if (comp > 0) {
-                return treeSearch(value, this.binTree.right(pos)); // search right
-            }
+    protected Position<E> treeSearch(E value, Position<E> pos) throws RuntimeException {
+        if (this.binTree.isLeaf(pos)) {
+            return pos; // key not found, return external node
         }
-        return pos; // key not found; return external node
+        E curValue = pos.getElement();
+        int comp = comparator.compare(value, curValue);
+        if (comp < 0) {
+            return treeSearch(value, this.binTree.left(pos)); // search left subtree
+        } else if (comp > 0) {
+            return treeSearch(value, this.binTree.right(pos)); // search right subtree
+        }
+        return pos; // return internal node where key is found
     }
 
     /**
-     * Adds to L all entries in the subtree rooted at v having keys equal to k.
+     * Adds to list all entries in the subtree rooted at v having keys equal to k.
      */
-    protected void addAll(List<Position<E>> l, Position<E> pos, E value) {
+    protected void addAll(List<Position<E>> list, Position<E> pos, E value) {
         if (this.binTree.isLeaf(pos)) {
             return;
         }
         Position<E> p = treeSearch(value, pos);
         if (!this.binTree.isLeaf(p)) { // we found an entry with key equal to k
-            addAll(l, this.binTree.left(p), value);
-            l.add(p); // add entries in inorder
-            addAll(l, this.binTree.right(p), value);
+            addAll(list, this.binTree.left(p), value);
+            list.add(p); // add entries in inorder
+            addAll(list, this.binTree.right(p), value);
         } // this recursive algorithm is simple, but it's not the fastest
     }
 
@@ -184,7 +179,7 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
      */
     @Override
     public boolean isEmpty() {
-        return size() == 0;
+        return size == 0;
     }
 
     /**
