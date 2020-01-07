@@ -285,43 +285,49 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
         return list;
     }
 
+    /**
+     * Recursive method to find where the value's position
+     * @author vlt23
+     * @param value to find
+     * @param currentPos to see if has the value
+     * @return the exactly value's position, or the next if not found
+     */
     private Position<E> findNextPos(E value, Position<E> currentPos) {
+        // Trash node, not found the exactly value's node, return to parent
         if (currentPos.getElement() == null) {
             return null;
         }
 
-        if (comparator.compare(value, currentPos.getElement()) < 0) {
+        if (comparator.compare(value, currentPos.getElement()) < 0) {  // Left
             if (binTree.hasLeft(currentPos)) {
+                // Go to left subtree
                 Position<E> returnedPos = findNextPos(value, binTree.left(currentPos));
-                if (returnedPos != null) {
+                if (returnedPos != null) {  // Node found (can be exactly or the next), return directly
                     return returnedPos;
                 }
-                // returnedPos is null
+                // returnedPos is null, search the next value's node
                 if (comparator.compare(value, currentPos.getElement()) > 0) {
-                    return null;
-                } else {
-                    return currentPos;
+                    return null;  // Go to parent node
                 }
             }
-            return currentPos;
-        } else if (comparator.compare(value, currentPos.getElement()) > 0) {
+            return currentPos;  // Found the next value's node
+        } else if (comparator.compare(value, currentPos.getElement()) > 0) {  // Right
             if (binTree.hasRight(currentPos)) {
+                // Go to right subtree
                 Position<E> returnedPos = findNextPos(value, binTree.right(currentPos));
-                if (returnedPos != null) {
+                if (returnedPos != null) {  // Node found (can be exactly or the next), return directly
                     return returnedPos;
                 }
-                // returnedPos is null
+                // returnedPos is null, search the next value's node
                 if (comparator.compare(value, currentPos.getElement()) > 0) {
-                    return null;
-                } else {
-                    return currentPos;
+                    return null;  // Go to parent node
                 }
             }
-            return currentPos;
-        } else if (comparator.compare(currentPos.getElement(), value) == 0) {
-            return currentPos;
+            return currentPos;  // Found the next value's node
+        } else if (comparator.compare(currentPos.getElement(), value) == 0) {  // Found the exactly node
+            return currentPos;  // Return the exactly node
         }
-        return null;
+        return null;  // Not found the exactly node, search the next value's node
     }
 
     public Position<E> first() throws RuntimeException {
