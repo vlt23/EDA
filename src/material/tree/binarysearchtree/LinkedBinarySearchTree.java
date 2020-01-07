@@ -259,57 +259,69 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
     }
 
     public Iterable<Position<E>> findRange(E minValue, E maxValue) throws RuntimeException {
-        if (comparator.compare(minValue, maxValue) > 0) {
+        if (comparator.compare(minValue, maxValue) > 0) {  // E parameter
             throw new RuntimeException("Invalid range. (min>max)");
         }
+
         List<Position<E>> list = new ArrayList<>();
-        Position<E> currentValuePos = findProximPos(minValue);
-        if (comparator.compare(currentValuePos.getElement(), minValue) > 0
-                || comparator.compare(currentValuePos.getElement(), maxValue) > 0) {
-            return list;
+        Position<E> currentValuePos = findNextPos(minValue, binTree.root());
+        if (currentValuePos == null) {
+            return list;  // empty list, minValue is higher than the max node
         }
+
         Iterator<Position<E>> it = new InorderBinaryTreeIterator<>(binTree, currentValuePos);
-        while (comparator.compare(currentValuePos.getElement(), maxValue) <= 0 && it.hasNext()) {
-            list.add(it.next());
+        Position<E> pos;
+        while (it.hasNext()) {
+            pos = it.next();
+            // Ignoring trash nodes
+            if (pos.getElement() != null) {
+                if (comparator.compare(pos.getElement(), maxValue) <= 0) {
+                    list.add(pos);
+                } else {
+                    break;
+                }
+            }
         }
         return list;
     }
 
-    private Position<E> findProximPos(E value) {
-        Position<E> currentValuePos = this.binTree.root();
-        while (comparator.compare(currentValuePos.getElement(), value) != 0
-                && this.binTree.isInternal(currentValuePos)) {
-            /*if (currentValuePos.getElement() == null) {
-                currentValuePos = this.binTree.parent(currentValuePos);
-            } else */if (comparator.compare(value, currentValuePos.getElement()) < 0) {
-                if (this.binTree.hasLeft(currentValuePos)
-                        && this.binTree.left(currentValuePos).getElement() != null) {
-                    currentValuePos = this.binTree.left(currentValuePos);
-                } else {
-                    break;
+    private Position<E> findNextPos(E value, Position<E> currentPos) {
+        if (currentPos.getElement() == null) {
+            return null;
+        }
+
+        if (comparator.compare(value, currentPos.getElement()) < 0) {
+            if (binTree.hasLeft(currentPos)) {
+                Position<E> returnedPos = findNextPos(value, binTree.left(currentPos));
+                if (returnedPos != null) {
+                    return returnedPos;
                 }
-            } else {
-                if (this.binTree.hasRight(currentValuePos)
-                        && this.binTree.right(currentValuePos).getElement() != null) {
-                    currentValuePos = this.binTree.right(currentValuePos);
+                // returnedPos is null
+                if (comparator.compare(value, currentPos.getElement()) > 0) {
+                    return null;
                 } else {
-                    break;
+                    return currentPos;
                 }
             }
-        }
-        /*if (currentValuePos.getElement() == null) {
-            currentValuePos = this.binTree.parent(currentValuePos);
-        }*/
-        if (comparator.compare(value, currentValuePos.getElement()) > 0
-                && !this.binTree.isRoot(currentValuePos)) {
-            while (comparator.compare(value, this.binTree.parent(currentValuePos).getElement()) > 0) {
-                currentValuePos = this.binTree.parent(currentValuePos);
-                if (this.binTree.isRoot(currentValuePos)) {
-                    break;
+            return currentPos;
+        } else if (comparator.compare(value, currentPos.getElement()) > 0) {
+            if (binTree.hasRight(currentPos)) {
+                Position<E> returnedPos = findNextPos(value, binTree.right(currentPos));
+                if (returnedPos != null) {
+                    return returnedPos;
+                }
+                // returnedPos is null
+                if (comparator.compare(value, currentPos.getElement()) > 0) {
+                    return null;
+                } else {
+                    return currentPos;
                 }
             }
+            return currentPos;
+        } else if (comparator.compare(currentPos.getElement(), value) == 0) {
+            return currentPos;
         }
-        return currentValuePos;
+        return null;
     }
 
     public Position<E> first() throws RuntimeException {
