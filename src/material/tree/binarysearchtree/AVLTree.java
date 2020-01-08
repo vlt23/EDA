@@ -15,8 +15,8 @@ import java.util.List;
  */
 public class AVLTree<E> implements BinarySearchTree<E> {
 
-    //We need this class to store the height of each BTNode
-    private class AVLInfo<T> implements Comparable<AVLInfo<T>>, Position<T> {
+    // We need this class to store the height of each BTNode
+    private static class AVLInfo<T> implements Comparable<AVLInfo<T>>, Position<T> {
 
         private int height;
         private T element;
@@ -67,7 +67,7 @@ public class AVLTree<E> implements BinarySearchTree<E> {
     }
 
 
-    private class AVLTreeIterator<T> implements Iterator<Position<T>> {
+    private static class AVLTreeIterator<T> implements Iterator<Position<T>> {
 
         private Iterator<Position<AVLInfo<T>>> it;
 
@@ -95,7 +95,6 @@ public class AVLTree<E> implements BinarySearchTree<E> {
     private LinkedBinarySearchTree<AVLInfo<E>> bst;
     private ReestructurableBinaryTree<AVLInfo<E>> resBT;
 
-
     public AVLTree() {
         this(new DefaultComparator<>());
     }
@@ -111,7 +110,6 @@ public class AVLTree<E> implements BinarySearchTree<E> {
         resBT = new ReestructurableBinaryTree<>();
         bst.binTree = resBT;
     }
-
 
     @Override
     public Position<E> find(E value) {
@@ -144,7 +142,6 @@ public class AVLTree<E> implements BinarySearchTree<E> {
     public int size() {
         return bst.size();
     }
-
 
     /**
      * Returns whether a node has balance factor between -1 and 1.
@@ -255,8 +252,7 @@ public class AVLTree<E> implements BinarySearchTree<E> {
     @Override
     public Iterator<Position<E>> iterator() {
         Iterator<Position<AVLInfo<E>>> bstIt = bst.iterator();
-        AVLTreeIterator<E> it = new AVLTreeIterator<E>(bstIt);
-        return it;
+        return new AVLTreeIterator<>(bstIt);
     }
 
     /**
@@ -268,15 +264,13 @@ public class AVLTree<E> implements BinarySearchTree<E> {
         } else if (!(p instanceof AVLInfo)) {
             throw new RuntimeException("The position of the AVL node is not AVL");
         } else {
-            AVLInfo<E> aux = (AVLInfo<E>) p;
-            return aux;
+            return (AVLInfo<E>) p;
         }
     }
 
-
     public Iterable<Position<E>> findRange(E minValue, E maxValue) throws RuntimeException {
-        //TODO: Practica 5 Ejercicio 1
-        throw new RuntimeException("Not yet implemented.");
+        Iterable<Position<AVLInfo<E>>> iterable = bst.findRange(new AVLInfo<>(minValue), new AVLInfo<>(maxValue));
+        return fromPositionAVLInfoToPosition(iterable);
     }
 
     public Position<E> first() throws RuntimeException {
@@ -312,14 +306,22 @@ public class AVLTree<E> implements BinarySearchTree<E> {
     }
 
     public Iterable<Position<E>> successors(Position<E> pos) {
-        //TODO: Practica 5 Ejercicio 2
-        throw new RuntimeException("Not yet implemented.");
-
+        AVLInfo<E> avlInfoPos = checkPosition(pos);
+        Iterable<Position<AVLInfo<E>>> iterable = bst.successors(avlInfoPos.pos);
+        return fromPositionAVLInfoToPosition(iterable);
     }
 
     public Iterable<Position<E>> predecessors(Position<E> pos) {
         //TODO: Practica 5 Ejercicio 2
         throw new RuntimeException("Not yet implemented.");
     }
-}
 
+    private List<Position<E>> fromPositionAVLInfoToPosition(Iterable<Position<AVLInfo<E>>> iterable) {
+        List<Position<E>> positions = new ArrayList<>();
+        for (Position<AVLInfo<E>> i : iterable) {
+            positions.add(i.getElement());
+        }
+        return positions;
+    }
+
+}
