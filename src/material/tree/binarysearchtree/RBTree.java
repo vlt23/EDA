@@ -58,6 +58,7 @@ public class RBTree<E> implements BinarySearchTree<E> {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public int compareTo(RBInfo<T> o) {
             if (element instanceof Comparable && o.element instanceof Comparable) {
                 Comparable<T> c1 = (Comparable<T>) element;
@@ -93,8 +94,8 @@ public class RBTree<E> implements BinarySearchTree<E> {
         }
     }
 
-    private LinkedBinarySearchTree<RBInfo<E>> bst = new LinkedBinarySearchTree<>();
-    private ReestructurableBinaryTree<RBInfo<E>> resBT = new ReestructurableBinaryTree<>();
+    private LinkedBinarySearchTree<RBInfo<E>> bst;
+    private ReestructurableBinaryTree<RBInfo<E>> resBT;
 
     public RBTree() {
         this(new DefaultComparator<>());
@@ -310,7 +311,7 @@ public class RBTree<E> implements BinarySearchTree<E> {
     @Override
     public Iterator<Position<E>> iterator() {
         Iterator<Position<RBInfo<E>>> bstIt = bst.iterator();
-        return new RBTreeIterator<E>(bstIt);
+        return new RBTreeIterator<>(bstIt);
     }
 
     /**
@@ -327,8 +328,8 @@ public class RBTree<E> implements BinarySearchTree<E> {
     }
 
     public Iterable<Position<E>> findRange(E minValue, E maxValue) throws RuntimeException {
-        //TODO: Practica 5 Ejercicio 1
-        throw new RuntimeException("Not yet implemented.");
+        Iterable<Position<RBInfo<E>>> iterable = bst.findRange(new RBInfo<>(minValue), new RBInfo<>(maxValue));
+        return fromPositionRBInfoToPosition(iterable);
     }
 
     public Position<E> first() throws RuntimeException {
@@ -364,14 +365,22 @@ public class RBTree<E> implements BinarySearchTree<E> {
     }
 
     public Iterable<Position<E>> successors(Position<E> pos) {
-        //TODO: Practica 5 Ejercicio 2
-        throw new RuntimeException("Not yet implemented.");
-
+        RBInfo<E> rbInfo = checkPosition(pos);
+        Iterable<Position<RBInfo<E>>> iterable = bst.successors(rbInfo.pos);
+        return fromPositionRBInfoToPosition(iterable);
     }
 
     public Iterable<Position<E>> predecessors(Position<E> pos) {
         //TODO: Practica 5 Ejercicio 2
         throw new RuntimeException("Not yet implemented.");
+    }
+
+    private List<Position<E>> fromPositionRBInfoToPosition(Iterable<Position<RBInfo<E>>> iterable) {
+        List<Position<E>> positions = new ArrayList<>();
+        for (Position<RBInfo<E>> i : iterable) {
+            positions.add(i.getElement());
+        }
+        return positions;
     }
 
 }
