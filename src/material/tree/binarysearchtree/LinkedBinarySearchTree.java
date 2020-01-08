@@ -363,13 +363,20 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
     }
 
     public Iterable<Position<E>> successors(Position<E> pos) {
-        //TODO: Practica 5 Ejercicio 2
-        throw new RuntimeException("Not yet implemented.");
-
+        List<Position<E>> successorsList = new ArrayList<>();
+        Iterator<Position<E>> it = new InorderBinaryTreeIterator<>(binTree, pos);
+        while (it.hasNext()) {
+            Position<E> position = it.next();
+            if (position.getElement() != null) {
+                successorsList.add(position);
+            }
+        }
+        return successorsList;
     }
 
     public Iterable<Position<E>> predecessors(Position<E> pos) {
-        //TODO: Practica 5 Ejercicio 2
+        List<Position<E>> predecessorsList = new ArrayList<>();
+
         throw new RuntimeException("Not yet implemented.");
     }
 
