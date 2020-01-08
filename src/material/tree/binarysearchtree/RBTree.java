@@ -333,35 +333,13 @@ public class RBTree<E> implements BinarySearchTree<E> {
     }
 
     public Position<E> first() throws RuntimeException {
-        if (this.isEmpty()) {
-            throw new RuntimeException("No first element.");
-        }
-        Position<RBInfo<E>> pos = this.bst.binTree.root();
-        while (this.bst.binTree.isInternal(pos)) {
-            if (this.bst.binTree.hasLeft(pos)) {
-                pos = this.bst.binTree.left(pos);
-            }
-        }
-        if (pos.getElement() == null) {
-            pos = this.bst.binTree.parent(pos);
-        }
-        return pos.getElement();
+        Position<RBInfo<E>> rbInfoPosition = bst.first();
+        return rbInfoPosition.getElement();
     }
 
     public Position<E> last() throws RuntimeException {
-        if (this.isEmpty()) {
-            throw new RuntimeException("No last element.");
-        }
-        Position<RBInfo<E>> pos = this.bst.binTree.root();
-        while (this.bst.binTree.isInternal(pos)) {
-            if (this.bst.binTree.hasRight(pos)) {
-                pos = this.bst.binTree.right(pos);
-            }
-        }
-        if (pos.getElement() == null) {
-            pos = this.bst.binTree.parent(pos);
-        }
-        return pos.getElement();
+        Position<RBInfo<E>> rbInfoPosition = bst.last();
+        return rbInfoPosition.getElement();
     }
 
     public Iterable<Position<E>> successors(Position<E> pos) {
