@@ -265,20 +265,23 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
 
         List<Position<E>> list = new ArrayList<>();
         Position<E> currentValuePos = findNextPos(minValue, binTree.root());
-        if (currentValuePos == null) {
-            return list;  // empty list, minValue is higher than the max node
+        // minValue is higher than the max node; or the returned next node is higher than the maxValue
+        if (currentValuePos == null || comparator.compare(currentValuePos.getElement(), maxValue) > 0) {
+            return list;
         }
 
-        Iterator<Position<E>> it = new InorderBinaryTreeIterator<>(binTree, currentValuePos);
-        Position<E> pos;
-        while (it.hasNext()) {
-            pos = it.next();
-            // Ignoring trash nodes
-            if (pos.getElement() != null) {
-                if (comparator.compare(pos.getElement(), maxValue) <= 0) {
-                    list.add(pos);
-                } else {
-                    break;
+        list.add(currentValuePos);
+        if (binTree.hasRight(currentValuePos)) {
+            Iterator<Position<E>> it = new InorderBinaryTreeIterator<>(binTree, binTree.right(currentValuePos));
+            while (it.hasNext()) {
+                Position<E> pos = it.next();
+                // Ignoring trash nodes
+                if (pos.getElement() != null) {
+                    if (comparator.compare(pos.getElement(), maxValue) <= 0) {
+                        list.add(pos);
+                    } else {
+                        break;
+                    }
                 }
             }
         }
@@ -364,11 +367,14 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
 
     public Iterable<Position<E>> successors(Position<E> pos) {
         List<Position<E>> successorsList = new ArrayList<>();
-        Iterator<Position<E>> it = new InorderBinaryTreeIterator<>(binTree, pos);
-        while (it.hasNext()) {
-            Position<E> position = it.next();
-            if (position.getElement() != null) {
-                successorsList.add(position);
+        successorsList.add(pos);
+        if (binTree.hasRight(pos)) {
+            Iterator<Position<E>> it = new InorderBinaryTreeIterator<>(binTree, binTree.right(pos));
+            while (it.hasNext()) {
+                Position<E> position = it.next();
+                if (position.getElement() != null) {
+                    successorsList.add(position);
+                }
             }
         }
         return successorsList;
