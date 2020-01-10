@@ -18,7 +18,6 @@ public class InorderBinaryTreeIterator<T> implements Iterator<Position<T>> {
     private Deque<Position<T>> nodeStack = new LinkedList<>();
     private final BinaryTree<T> tree;
     private boolean isBeginRoot;
-    private final Position<T> initialPosition;
 
     public InorderBinaryTreeIterator(BinaryTree<T> tree) {
         this.tree = tree;
@@ -26,19 +25,12 @@ public class InorderBinaryTreeIterator<T> implements Iterator<Position<T>> {
             goToLastInLeft(tree.root());
         }
         isBeginRoot = true;
-        initialPosition = null;  // Not necessary for this constructor
     }
 
     public InorderBinaryTreeIterator(BinaryTree<T> tree, Position<T> node) {
         this.tree = tree;
         goToLastInLeft(node);
-        if (node != tree.root()) {
-            initialPosition = node;
-            isBeginRoot = false;
-        } else {
-            initialPosition = null;
-            isBeginRoot = true;
-        }
+        isBeginRoot = node == tree.root();
     }
 
     private void goToLastInLeft(Position<T> node) {
@@ -63,8 +55,8 @@ public class InorderBinaryTreeIterator<T> implements Iterator<Position<T>> {
         if (tree.hasRight(aux)) {
             goToLastInLeft(tree.right(aux));
         } else if (!isBeginRoot && nodeStack.isEmpty()) {
-            Position<T> parent = tree.parent(initialPosition);
-            Position<T> child = initialPosition;
+            Position<T> parent = tree.parent(aux);
+            Position<T> child = aux;
             boolean ifAdd = true;  // need to not iterate twice
             while (tree.hasRight(parent) && tree.right(parent) == child) {
                 if (tree.root() == parent) {
@@ -77,7 +69,9 @@ public class InorderBinaryTreeIterator<T> implements Iterator<Position<T>> {
             if (ifAdd) {
                 nodeStack.addFirst(parent);
             }
-            isBeginRoot = true;
+            if (parent == tree.root()) {
+                isBeginRoot = true;
+            }
         }
         return aux;
     }
