@@ -290,8 +290,9 @@ public class AVLTree<E> implements BinarySearchTree<E> {
     }
 
     public Iterable<Position<E>> predecessors(Position<E> pos) {
-        //TODO: Practica 5 Ejercicio 2
-        throw new RuntimeException("Not yet implemented.");
+        AVLInfo<E> avlInfo = checkPosition(pos);
+        Iterable<Position<AVLInfo<E>>> iterable = bst.predecessors(avlInfo.pos);
+        return fromPositionAVLInfoToPosition(iterable);
     }
 
     private List<Position<E>> fromPositionAVLInfoToPosition(Iterable<Position<AVLInfo<E>>> iterable) {

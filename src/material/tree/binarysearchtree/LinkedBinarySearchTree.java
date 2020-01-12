@@ -4,10 +4,7 @@ import material.Position;
 import material.tree.binarytree.LinkedBinaryTree;
 import material.tree.iterators.InorderBinaryTreeIterator;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Realization of a dictionary by means of a binary search tree.
@@ -382,8 +379,18 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
 
     public Iterable<Position<E>> predecessors(Position<E> pos) {
         List<Position<E>> predecessorsList = new ArrayList<>();
-
-        throw new RuntimeException("Not yet implemented.");
+        Iterator<Position<E>> it = new InorderBinaryTreeIterator<>(binTree);
+        while (it.hasNext()) {
+            Position<E> position = it.next();
+            if (position.getElement() != null) {
+                predecessorsList.add(position);
+                if (position == pos) {
+                    break;
+                }
+            }
+        }
+        Collections.reverse(predecessorsList);
+        return predecessorsList;
     }
 
 }

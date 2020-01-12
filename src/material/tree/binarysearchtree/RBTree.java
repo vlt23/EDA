@@ -349,8 +349,9 @@ public class RBTree<E> implements BinarySearchTree<E> {
     }
 
     public Iterable<Position<E>> predecessors(Position<E> pos) {
-        //TODO: Practica 5 Ejercicio 2
-        throw new RuntimeException("Not yet implemented.");
+        RBInfo<E> rbInfo = checkPosition(pos);
+        Iterable<Position<RBInfo<E>>> iterable = bst.predecessors(rbInfo.pos);
+        return fromPositionRBInfoToPosition(iterable);
     }
 
     private List<Position<E>> fromPositionRBInfoToPosition(Iterable<Position<RBInfo<E>>> iterable) {
