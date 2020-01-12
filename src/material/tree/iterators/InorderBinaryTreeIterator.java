@@ -57,20 +57,16 @@ public class InorderBinaryTreeIterator<T> implements Iterator<Position<T>> {
         } else if (!isBeginRoot && nodeStack.isEmpty()) {
             Position<T> parent = tree.parent(aux);
             Position<T> child = aux;
-            boolean ifAdd = true;  // need to not iterate twice
             while (tree.hasRight(parent) && tree.right(parent) == child) {
                 if (tree.root() == parent) {
-                    ifAdd = false;
+                    isBeginRoot = true;
                     break;
                 }
                 parent = tree.parent(parent);
                 child = tree.parent(child);
             }
-            if (ifAdd) {
+            if (!isBeginRoot) {  // prevent iterate twice
                 nodeStack.addFirst(parent);
-            }
-            if (parent == tree.root()) {
-                isBeginRoot = true;
             }
         }
         return aux;
